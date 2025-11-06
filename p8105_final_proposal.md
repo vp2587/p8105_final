@@ -3,7 +3,8 @@ Proposal
 Veerapetch Petchger
 2025-11-06
 
-1)  The group members (names and UNIs)
+**1) The group members (names and UNIs)** Veerapetch Petchger: vp2587
+Clement Li: cl4773 Heather Lu: hl3978 Xiucheng (Eric) Zhang: xz3312
 
 2)  The tentative project title
 
