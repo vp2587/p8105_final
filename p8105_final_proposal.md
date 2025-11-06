@@ -47,8 +47,42 @@ walk viewers through the dataset and each section of the site.
 This dataset is from Kaggle
 (<https://www.kaggle.com/datasets/amandam1/breastcancerdataset/data>)
 and contains a cohort of 334 breast cancer patients undergoing surgery
-to remove their tumour. Variables include: age at diagnosis, gender,
-tumour stage (I, II, III), histology type, and surgery type.
+to remove their tumour. Variables include:
+
+- Patient_ID: unique identifier id of a patient
+
+- Age: age at diagnosis (Years)
+
+- Gender: Male/Female
+
+- Protein1, Protein2, Protein3, Protein4: expression levels (undefined
+  units)
+
+- Tumour_Stage: I, II, III
+
+- Histology: Infiltrating Ductal Carcinoma, Infiltrating Lobular
+  Carcinoma, Mucinous Carcinoma
+
+- ER status (A protein that helps breast cancer cells grow in response
+  to estrogen): Positive/Negative
+
+- PR status (A protein that helps breast cancer cells grow in response
+  to progesterone.): Positive/Negative
+
+- HER2 status (A protein that helps breast cancer cells divide and
+  spread.): Positive/Negative
+
+- Surgery_type: Lumpectomy, Simple Mastectomy, Modified Radical
+  Mastectomy, Other
+
+- Date_of_Surgery: Date on which surgery was performed (in DD-MON-YY)
+
+- Date_of_Last_Visit: Date of last visit (in DD-MON-YY) \[can be null,
+  in case the patient didn’t visited again after the surgery\]
+
+- Patient_Status: Alive/Dead \[can be null, in case the patient didn’t
+  visited again after the surgery and there is no information available
+  whether the patient is alive or dead\].
 
 **6) The planned analyses / visualizations / coding challenges**
 
