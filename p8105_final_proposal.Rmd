@@ -22,9 +22,12 @@ output: github_document
 Breast cancer remains among the biggest threats to women's health worldwide. According to the WHO, it was the most common cancer in women for 157 countries in 2022, leading to ~670000 deaths globally. 
 
 4) The intended final products
+The final product will be a comprehensive webpage featuring a navigation bar with multiple sections: a homepage introducing the dataset, an exploratory data analysis (EDA) section describing variable summaries and data cleaning methods, and a statistical analysis section presenting a multivariable logistic regression model of breast cancer outcomes, anova comparison of biomarkers, and survival analysis. The webpage will also include interactive visualizations and screencast recordings that walk viewers through the dataset and each section of the site.
 
 5) The anticipated data sources
+The dataset is real breast cancer sample dataset for healthcare and cancer data analysis. The dataset is obtained from Kaggle.
 
 6) The planned analyses / visualizations / coding challenges
+
 
 7) The planned timeline
