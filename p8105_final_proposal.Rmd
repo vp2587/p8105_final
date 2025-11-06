@@ -28,6 +28,8 @@ The final product will be a comprehensive webpage featuring a navigation bar wit
 
 **5) The anticipated data sources**
 
+This dataset is from Kaggle (https://www.kaggle.com/datasets/amandam1/breastcancerdataset/data) and contains a cohort of 334 breast cancer patients undergoing surgery to remove their tumour. Variables include: age at diagnosis, gender, tumour stage (I, II, III), histology type, and surgery type.
+
 **6) The planned analyses / visualizations / coding challenges**
 
 The first thing we will do is perfrom EDA on the BRCA.csv dataset. This will include summaries of age, tumour stage, histology, hormone receptor status (ER/PR/HER2), surgery type, and the four protein biomarkers. We will examine distributions using histograms and boxplots, and create stratified summaries (e.g., protein levels by tumour stage or histology) to identify broad patterns that can guide subsequent modeling.
