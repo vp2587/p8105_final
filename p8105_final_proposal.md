@@ -18,37 +18,30 @@ Veerapetch Petchger, Clement Li, Heather Lu, Xiucheng (Eric) Zhang
 3)  The motivation for this project Breast cancer remains among the
     biggest threats to women’s health worldwide. According to the WHO,
     it was the most common cancer in women for 157 countries in 2022,
-    leading to ~670000 deaths globally.
+    leading to ~670000 deaths globally. However, it is commonly known
+    that early detection and treatment significantly improves survival
+    rates. This project aims to explore the relationships among key
+    clinical features in breast cancer cases, such as tumor size,
+    texture, and symmetry, to better understand the differences between
+    benign and malignant tumors. By visualizing and analyzing these
+    relationships, we hope to highlight meaningful patterns that can
+    support further research and awareness towards early detection.
 
-4)  The intended final products
+4)  The intended final products The final product will be a
+    comprehensive webpage featuring a navigation bar with multiple
+    sections: a homepage introducing the dataset, an exploratory data
+    analysis (EDA) section describing variable summaries and data
+    cleaning methods, and a statistical analysis section presenting a
+    multivariable logistic regression model of breast cancer outcomes,
+    anova comparison of biomarkers, and survival analysis. The webpage
+    will also include interactive visualizations and screencast
+    recordings that walk viewers through the dataset and each section of
+    the site.
 
-5)  The anticipated data sources
-
-Real Breast Cancer Data (Kaggle) — by AmandaM1. This dataset follows a
-cohort of 334 breast cancer patients undergoing surgery to remove their
-tumor. Variables include: age at diagnosis, gender, tumor stage (I, II,
-III), histology type, and surgery type. Outcomes include: Patient status
-/ survival: alive vs dead vs no reported status.
-
-Patient status / survival: alive vs dead vs no reported status.
+5)  The anticipated data sources The dataset is real breast cancer
+    sample dataset for healthcare and cancer data analysis. The dataset
+    is obtained from Kaggle.
 
 6)  The planned analyses / visualizations / coding challenges
 
 7)  The planned timeline
-
-November 6-7: Data collection, cleaning, and preliminary exploration.
-
-November 10-14: Start multivariable logistic regression, ANOVA
-comparison of biomarkers, and survival analysis.
-
-November 15-25: Finalize all analyses and begin working on
-visualizations.
-
-November 26-30: Complete the draft report with visualizations and
-interpretation.
-
-December 1-6: Review and finalize the project for submission.
-
-December 6-11: Review and finalize the project for submission.
-
-December 6-11: Review and finalize the project for submission.
