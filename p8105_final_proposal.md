@@ -20,10 +20,33 @@ Veerapetch Petchger, Clement Li, Heather Lu, Xiucheng (Eric) Zhang
     it was the most common cancer in women for 157 countries in 2022,
     leading to ~670000 deaths globally.
 
-4)  The intended final products
+4)  The intended final products The final product will be a
+    comprehensive webpage featuring a navigation bar with multiple
+    sections: a homepage introducing the dataset, an exploratory data
+    analysis (EDA) section describing variable summaries and data
+    cleaning methods, and a statistical analysis section presenting a
+    multivariable logistic regression model of breast cancer outcomes,
+    anova comparison of biomarkers, and survival analysis. The webpage
+    will also include interactive visualizations and screencast
+    recordings that walk viewers through the dataset and each section of
+    the site.
 
-5)  The anticipated data sources
+5)  The anticipated data sources The dataset is real breast cancer
+    sample dataset for healthcare and cancer data analysis. The dataset
+    is obtained from Kaggle.
 
 6)  The planned analyses / visualizations / coding challenges
+
+The first thing we will do is perfrom EDA on the BRCA.csv dataset. This
+will include summaries of age, tumour stage, histology, hormone receptor
+status (ER/PR/HER2), surgery type, and the four protein biomarkers. We
+will examine distributions using histograms and boxplots, and create
+stratified summaries (e.g., protein levels by tumour stage or histology)
+to identify broad patterns that can guide subsequent modeling.
+
+Our first main analysis will be multivariable logistic regression with
+patient status (alive vs dead at last visit) as the outcome and
+predictors will include age, tumour stage, surgery type, receptor
+status, and selected protein markers from the EDA.
 
 7)  The planned timeline
