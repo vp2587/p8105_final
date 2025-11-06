@@ -52,8 +52,35 @@ to identify broad patterns that can guide subsequent modeling.
 
 Our first main analysis will be multivariable logistic regression with
 patient status (alive vs dead at last visit) as the outcome and
-predictors will include age, tumour stage, surgery type, receptor
-status, and selected protein markers from the EDA.
+predictors will include age, tumor stage, surgery type, receptor status,
+and selected protein markers from the EDA. We can then report the
+adjusted odds ratio, and assess predictive performance through ROC
+curves and AUC.
+
+In addition to this, we also plan on conducting ANOVA comparisons on the
+difference protein biomarkers across different groups, such as tumour
+stage or histology type. his will allow us to test whether mean protein
+expression differs systematically between groups. We will conduct
+multiple-comparison tests after ANOVA results if necessary.
+
+Third, we will perform basic survival analysis using the dates of
+surgery, dates of last follow-up, and patient status. We will calculate
+follow-up time for each patient and indicate whether they died during
+follow-up or were still alive. Using this information, we will create
+Kaplan–Meier survival curves to show how the probability of surviving
+changes over time, both for the whole cohort and for subgroups such as
+tumour stage or HER2 status.
+
+In terms of visualizations, we plan to produce distribution plots and
+boxplots for age and protein biomarkers, a correlation heat map of the
+protein markers, Kaplan–Meier survival curves with risk tables, and
+model-based plots such as ROC curves.
+
+From a coding and workflow perspective, the project will involve
+challenges involving date parsing, deriving follow-up time, factor
+recoding, handling missing data, and working collaboratively in a shared
+GitHub repository using a common RStudio project and regular
+pull/commit/push cycles.
 
 **7) The planned timeline**
 
@@ -70,4 +97,4 @@ interpretation.
 
 December 1-6: Review and finalize the project for submission.
 
-December 6-11: Review and finalize the project for submission.
+December 6-11: Prepare presentation for in-class discussion of projects.
