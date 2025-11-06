@@ -15,10 +15,11 @@ Veerapetch Petchger, Clement Li, Heather Lu, Xiucheng (Eric) Zhang
 
 2)  The tentative project title
 
-3)  The motivation for this project Breast cancer remains among the
-    biggest threats to women’s health worldwide. According to the WHO,
-    it was the most common cancer in women for 157 countries in 2022,
-    leading to ~670000 deaths globally.
+3)  The motivation for this project
+
+Breast cancer remains among the biggest threats to women’s health
+worldwide. According to the WHO, it was the most common cancer in women
+for 157 countries in 2022, leading to ~670000 deaths globally.
 
 4)  The intended final products The final product will be a
     comprehensive webpage featuring a navigation bar with multiple
@@ -31,11 +32,9 @@ Veerapetch Petchger, Clement Li, Heather Lu, Xiucheng (Eric) Zhang
     recordings that walk viewers through the dataset and each section of
     the site.
 
-5)  The anticipated data sources The dataset is real breast cancer
-    sample dataset for healthcare and cancer data analysis. The dataset
-    is obtained from Kaggle.
+5)  The anticipated data sources
 
-6)  The planned analyses / visualizations / coding challenges
+**6) The planned analyses / visualizations / coding challenges**
 
 The first thing we will do is perfrom EDA on the BRCA.csv dataset. This
 will include summaries of age, tumour stage, histology, hormone receptor
@@ -50,3 +49,18 @@ predictors will include age, tumour stage, surgery type, receptor
 status, and selected protein markers from the EDA.
 
 7)  The planned timeline
+
+November 6-7: Data collection, cleaning, and preliminary exploration.
+
+November 10-14: Start multivariable logistic regression, ANOVA
+comparison of biomarkers, and survival analysis.
+
+November 15-25: Finalize all analyses and begin working on
+visualizations.
+
+November 26-30: Complete the draft report with visualizations and
+interpretation.
+
+December 1-6: Review and finalize the project for submission.
+
+December 6-11: Review and finalize the project for submission.
