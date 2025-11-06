@@ -5,11 +5,17 @@ date: "2025-11-06"
 output: github_document
 ---
 
-1) The group members (names and UNIs)
+**1) The group members (names and UNIs)**
+Veerapetch Petchger: vp2587
+Clement Li: cl4773
+Heather Lu: hl3978
+Xiucheng (Eric) Zhang: xz3312
 
 2) The tentative project title
 
-3) The motivation for this project
+
+3) The motivation for this project 
+
 
 4) The intended final products
 The final product will be a comprehensive webpage featuring a navigation bar with multiple sections: a homepage introducing the dataset, an exploratory data analysis (EDA) section describing variable summaries and data cleaning methods, and a statistical analysis section presenting a multivariable logistic regression model of breast cancer outcomes, anova comparison of biomarkers, and survival analysis. The webpage will also include interactive visualizations and screencast recordings that walk viewers through the dataset and each section of the site.
