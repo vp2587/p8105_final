@@ -13,32 +13,33 @@ Veerapetch Petchger, Clement Li, Heather Lu, Xiucheng (Eric) Zhang
 
 - Xiucheng (Eric) Zhang: xz3312
 
-2)  The tentative project title
+**2) The tentative project title**
 
-3)  The motivation for this project Breast cancer remains among the
-    biggest threats to women’s health worldwide. According to the WHO,
-    it was the most common cancer in women for 157 countries in 2022,
-    leading to ~670000 deaths globally. However, it is commonly known
-    that early detection and treatment significantly improves survival
-    rates. This project aims to explore the relationships among key
-    clinical features in breast cancer cases, such as tumor size,
-    texture, and symmetry, to better understand the differences between
-    benign and malignant tumors. By visualizing and analyzing these
-    relationships, we hope to highlight meaningful patterns that can
-    support further research and awareness towards early detection.
+**3) The motivation for this project**
 
-4)  The intended final products The final product will be a
-    comprehensive webpage featuring a navigation bar with multiple
-    sections: a homepage introducing the dataset, an exploratory data
-    analysis (EDA) section describing variable summaries and data
-    cleaning methods, and a statistical analysis section presenting a
-    multivariable logistic regression model of breast cancer outcomes,
-    anova comparison of biomarkers, and survival analysis. The webpage
-    will also include interactive visualizations and screencast
-    recordings that walk viewers through the dataset and each section of
-    the site.
+Breast cancer remains among the biggest threats to women’s health
+worldwide. According to the WHO, it was the most common cancer in women
+for 157 countries in 2022, leading to ~670000 deaths globally. However,
+it is commonly known that early detection and treatment significantly
+improves survival rates. This project aims to explore the relationships
+among key clinical features in breast cancer cases, such as tumor size,
+texture, and symmetry, to better understand the differences between
+benign and malignant tumors. By visualizing and analyzing these
+relationships, we hope to highlight meaningful patterns that can support
+further research and awareness towards early detection.
 
-5)  The anticipated data sources
+**4) The intended final products**
+
+The final product will be a comprehensive webpage featuring a navigation
+bar with multiple sections: a homepage introducing the dataset, an
+exploratory data analysis (EDA) section describing variable summaries
+and data cleaning methods, and a statistical analysis section presenting
+a multivariable logistic regression model of breast cancer outcomes,
+anova comparison of biomarkers, and survival analysis. The webpage will
+also include interactive visualizations and screencast recordings that
+walk viewers through the dataset and each section of the site.
+
+**5) The anticipated data sources**
 
 **6) The planned analyses / visualizations / coding challenges**
 
@@ -54,7 +55,7 @@ patient status (alive vs dead at last visit) as the outcome and
 predictors will include age, tumour stage, surgery type, receptor
 status, and selected protein markers from the EDA.
 
-7)  The planned timeline
+**7) The planned timeline**
 
 November 6-7: Data collection, cleaning, and preliminary exploration.
 
