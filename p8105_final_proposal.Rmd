@@ -17,6 +17,7 @@ output: github_document
 
 **2) The tentative project title**
 
+Predicting Breast Cancer Outcomes from Clinical Features and Protein Biomarkers
 
 **3) The motivation for this project**
 

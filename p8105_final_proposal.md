@@ -15,6 +15,9 @@ Veerapetch Petchger, Clement Li, Heather Lu, Xiucheng (Eric) Zhang
 
 **2) The tentative project title**
 
+Predicting Breast Cancer Outcomes from Clinical Features and Protein
+Biomarkers
+
 **3) The motivation for this project**
 
 Breast cancer remains among the biggest threats to women’s health
@@ -40,6 +43,12 @@ also include interactive visualizations and screencast recordings that
 walk viewers through the dataset and each section of the site.
 
 **5) The anticipated data sources**
+
+This dataset is from Kaggle
+(<https://www.kaggle.com/datasets/amandam1/breastcancerdataset/data>)
+and contains a cohort of 334 breast cancer patients undergoing surgery
+to remove their tumour. Variables include: age at diagnosis, gender,
+tumour stage (I, II, III), histology type, and surgery type.
 
 **6) The planned analyses / visualizations / coding challenges**
 
