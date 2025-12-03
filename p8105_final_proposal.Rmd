@@ -21,7 +21,7 @@ Predicting Breast Cancer Outcomes from Clinical Features and Protein Biomarkers
 
 **3) The motivation for this project**
 
-Breast cancer remains among the biggest threats to women's health worldwide. According to the WHO, it was the most common cancer in women for 157 countries in 2022, leading to ~670000 deaths globally. However, it is commonly known that early detection and treatment significantly improves survival rates. This project aims to explore the relationships among key clinical features in breast cancer cases, such as tumor size, texture, and symmetry, to better understand the differences between benign and malignant tumors. By visualizing and analyzing these relationships, we hope to highlight meaningful patterns that can support further research and awareness towards early detection.
+Breast cancer remains among the biggest threats to women's health worldwide. According to the WHO, it was the most common cancer in women for 157 countries in 2022, leading to ~670000 deaths globally. Despite this burde, survival rates significantly improves with early detection and treatment. This project aims to explore the relationships among clinical characteristics such as age, tumor stage, histology, hormone receptor status, and type of surgery relate to patient outcomes. Specifically, we are seeking patterns across these variables that can enhance survival prediction and disease progression.
 
 **4) The intended final products**
 
