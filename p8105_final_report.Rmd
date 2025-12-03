@@ -1,30 +1,145 @@
 ---
-title: "p8105_final_report"
-author: "Heather Lu"
-date: "2025-12-03"
+title: "Predicting Breast Cancer Outcomes from Clinical Features and Protein Biomarkers"
+author: "Veerapetch Petchger, Clement Li, Heather Lu, Xiucheng (Eric) Zhang"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+
+library(tidyverse)
+library(janitor)
+library(broom)
+library(pROC)        # ROC / AUC
+library(survival)    # Surv, survfit
 ```
 
-## R Markdown
+# 1) Introduction / Motivation
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+- Brief breast cancer background and burden.
+- Why survival prediction and biomarkers matter.
+- Your specific goals:
+  - Describe clinical and biomarker patterns.
+  - Build a logistic regression model for patient status.
+  - Compare biomarker levels across groups.
+  - Perform basic survival analysis.
+  
+# 2) Data
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+### Source and study population
+- Kaggle dataset (334 breast cancer patients undergoing surgery).
+- Link to source.
+- Key inclusion/exclusion notes (if you drop rows).
 
-```{r cars}
-summary(cars)
+### Variables
+- List key variables with short descriptions.
+- Clarify outcome: patient status (Alive/Dead).
+- Clarify time variables: Date_of_Surgery, Date_of_Last_Visit.
+
+### Data import and cleaning
+
+```{r}
+
 ```
 
-## Including Plots
+## 3) Exploratory Data Analysis (EDA)
 
-You can also embed plots, for example:
+### Overall summaries
+- Age: mean, SD, range.
+- Tumour stage and histology: counts/percent.
+- ER/PR/HER2 status: counts/percent.
+- Surgery types: counts/percent.
+- Protein biomarkers: mean, SD, distribution shape.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+### Distributions
+
+#### Age and proteins
+- Histograms / density plots.
+- Boxplots of proteins.
+
+#### Stratified summaries
+- Protein levels by tumour stage.
+- Protein levels by histology.
+- Crosstabs of receptor status and tumour stage.
+
+```{r}
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+# 4) Logistic regression: Predicting patient status
+
+### Model specification
+- Outcome: patient_status (Alive vs Dead).
+- Predictors: age, tumour_stage, surgery_type, ER/PR/HER2, selected proteins.
+- Brief rationale for selected predictors (based on EDA).
+
+### Model fitting
+```{r}
+
+```
+
+### Model results
+```{r}
+
+```
+
+### Model performance (ROC, AUC)
+```{r}
+
+```
+
+# 5) ANOVA: Protein biomarkers across clinical groups
+```{r}
+
+```
+
+## Question
+- Do protein levels differ by tumour stage?
+- Do protein levels differ by histology?
+
+## Methods
+- One-way ANOVA per protein.
+- Post-hoc pairwise comparisons (if global p < 0.05).
+
+## Results
+- Brief table of means by group.
+- ANOVA p-values.
+
+```{r}
+
+```
+
+# 6) Survival analysis
+
+### Time-to-event definition
+- Follow-up time = Date_of_Last_Visit – Date_of_Surgery.
+- Event indicator = 1 if Dead, 0 if Alive/unknown (define your handling of missing).
+
+### Kaplan–Meier curves
+- Overall KM curve.
+- Stratified curves (e.g., tumour stage, HER2 status).
+
+### Comparison
+- Visual comparison.
+- Optional: log-rank test.
+
+# 7) Discussion
+
+## Summary of main findings
+- Key predictors from logistic regression.
+- Whether biomarkers differ by stage/histology.
+- Survival differences between groups.
+
+## Strengths and limitations
+- Small sample size (n = 334).
+- Observational dataset; limited clinical detail.
+- Missing data in follow-up and status.
+
+## Future directions
+- More advanced models (e.g., regularized logistic regression, Cox PH).
+- External validation on independent data.
