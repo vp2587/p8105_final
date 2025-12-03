@@ -381,16 +381,61 @@ Clinical Features and Protein Biomarkers</h1>
 <li>Key inclusion/exclusion notes (if you drop rows).</li>
 </ul>
 </div>
-<div id="variables" class="section level3">
-<h3>Variables</h3>
-<ul>
-<li>List key variables with short descriptions.</li>
-<li>Clarify outcome: patient status (Alive/Dead).</li>
-<li>Clarify time variables: Date_of_Surgery, Date_of_Last_Visit.</li>
-</ul>
-</div>
 <div id="data-import-and-cleaning" class="section level3">
 <h3>Data import and cleaning</h3>
+<pre class="r"><code>brca_df_raw = read_csv(&quot;BRCA.csv&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
+  filter(!is.na(patient_id)) #remove empty rows at the bottom</code></pre>
+<div id="variables" class="section level4">
+<h4>Variables</h4>
+<p>After <code>clean_names()</code>, your key columns are:</p>
+<ul>
+<li><p><code>patient_id</code></p></li>
+<li><p><code>age</code></p></li>
+<li><p><code>gender</code></p></li>
+<li><p><code>protein1</code>–<code>protein4</code></p></li>
+<li><p><code>tumour_stage</code></p></li>
+<li><p><code>histology</code></p></li>
+<li><p><code>er_status</code>, <code>pr_status</code>,
+<code>her2_status</code></p></li>
+<li><p><code>surgery_type</code></p></li>
+<li><p><code>date_of_surgery</code></p></li>
+<li><p><code>date_of_last_visit</code></p></li>
+<li><p><code>patient_status</code></p></li>
+<li><p>List key variables with short descriptions.</p></li>
+<li><p>Clarify outcome: patient status (Alive/Dead).</p></li>
+<li><p>Clarify time variables: Date_of_Surgery,
+Date_of_Last_Visit.</p></li>
+</ul>
+</div>
+<div id="clean-data-types" class="section level4">
+<h4>Clean data types</h4>
+<pre class="r"><code>brca = brca_df_raw |&gt; 
+  mutate( #categorical variables
+    gender       = factor(gender),
+    tumour_stage = factor(tumour_stage,
+                          levels = c(&quot;I&quot;, &quot;II&quot;, &quot;III&quot;),
+                          ordered = TRUE),
+    histology    = factor(histology),
+    er_status    = factor(er_status),
+    pr_status    = factor(pr_status),
+    her2_status  = factor(her2_status),
+    surgery_type = factor(surgery_type),
+    patient_status = factor(patient_status,
+                            levels = c(&quot;Alive&quot;, &quot;Dead&quot;)),
+    #date variables
+    date_of_surgery     = as.Date(date_of_surgery, format = &quot;%d-%b-%y&quot;),
+    date_of_last_visit  = as.Date(date_of_last_visit, format = &quot;%d-%b-%y&quot;),
+
+    # survival
+    follow_up_time = as.numeric(date_of_last_visit - date_of_surgery),
+    event = case_when(
+      patient_status == &quot;Dead&quot;  ~ 1L,
+      patient_status == &quot;Alive&quot; ~ 0L,
+      TRUE                      ~ NA_integer_
+    )
+  )</code></pre>
+</div>
 </div>
 <div id="exploratory-data-analysis-eda" class="section level2">
 <h2>3) Exploratory Data Analysis (EDA)</h2>
