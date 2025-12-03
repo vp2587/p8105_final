@@ -1,0 +1,12 @@
+name: "Home"
+output_dir: "."
+navbar:
+  title: "Home"
+  right:
+    - text: "Home"
+      href: index.html
+    - text: "Introduction"
+      href: 
+output:
+  html_document:
+    theme: darkly

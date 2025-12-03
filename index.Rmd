@@ -1,0 +1,8 @@
+---
+title: "Predicting Breast Cancer Outcomes from Clinical Features and Protein Biomarkers"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
