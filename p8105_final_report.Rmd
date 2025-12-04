@@ -268,7 +268,22 @@ tumour_stage_status_plot =
 
 tumour_stage_status_plot
 ```
-Unsurprisingly, deaths rate increases with tumor stage. 
+As expected, deaths rate increases with tumor stage. 
+
+
+### 4. Stratified Summaries
+
+### Protein levels by tumor stage
+```{r}
+
+```
+
+### Protein levels by tumor type
+```{r}
+
+```
+
+
 
 ### Overall summaries
 - Age: mean, SD, range.
