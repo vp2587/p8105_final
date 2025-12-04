@@ -100,7 +100,7 @@ brca = brca_df_raw |>
 
 
 ## 1. Summary Tables
-Patient Characteristics Summary
+### Patient Characteristics Summary
 
 ```{r}
 brca %>% 
