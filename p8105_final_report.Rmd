@@ -18,7 +18,7 @@ library(pROC)        # ROC / AUC
 library(survival)    # Surv, survfit
 ```
 
-# 1) Introduction / Motivation
+# 1) Introduction / Motivation (CLEMENT)
 
 - Brief breast cancer background and burden.
 - Why survival prediction and biomarkers matter.
@@ -143,7 +143,7 @@ brca = brca_df_raw |>
 
 ```
 
-# 5) ANOVA: Protein biomarkers across clinical groups
+# 5) ANOVA: Protein biomarkers across clinical groups (CLEMENT)
 ```{r}
 
 ```
@@ -178,7 +178,7 @@ brca = brca_df_raw |>
 - Visual comparison.
 - Optional: log-rank test.
 
-# 7) Discussion
+# 7) Discussion (CLEMENT)
 
 ## Summary of main findings
 - Key predictors from logistic regression.
