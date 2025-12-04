@@ -118,7 +118,7 @@ brca %>%
 ```
 ### 2. Distribution Visualization
 
-Age Distribution
+### Age Distribution
 ```{r}
 brca %>% 
   ggplot(aes(x = age)) +
@@ -126,7 +126,7 @@ brca %>%
   labs(title = "Age Distribution of Breast Cancer Patients",
        x = "Age", y = "Count")
 ```
-Protein distribution
+### Protein distribution
 ```{r}
 brca %>%  
   pivot_longer(starts_with("protein"), names_to = "protein", values_to = "value") |> 
@@ -136,12 +136,13 @@ brca %>%
   labs(title = "Distribution of Protein Biomarkers")
 
 ```
-Carcinoma Type Classification
+
 ```{r setup, include = FALSE}
 library(dplyr)
 library(ggplot2)
 ```
 
+### Carcinoma Type Classification
 ```{r}
 carcinoma_type_pie =
   brca %>% 
@@ -163,7 +164,13 @@ carcinoma_type_pie =
 
 carcinoma_type_pie
 ```
-Tumor Stage Classification
+Infiltrating ductal carcinoma (IDC) is the most common breast cancer type. It begins in the milk ducts and grows into the surrounding breast tissue. As it progresses, IDC can spread through the lymphatic system or bloodstream to other parts of the body.
+
+Mucinous carcinoma is a breast cancer subtype in which tumor cells grow within mucin, the main component of mucus. Mucin normally supports healthy cell function, but in this tumor type, the mucin produced by cancer cells becomes part of the mass. Although mucinous tumors can occur elsewhere in the body, they most often appear in the breast.
+
+Infiltrating lobular carcinoma (ILC) starts in the lobules, the glands that produce milk. Because it is an invasive cancer, it extends beyond the lobule into nearby tissue, and over time can spread to other parts of the body.
+
+### Tumor Stage Classification
 ```{r}
 tumour_stage_pie =
   brca %>% 
@@ -185,7 +192,10 @@ tumour_stage_pie =
 
 tumour_stage_pie
 ```
-Patient Status (alive vs dead) General
+
+
+
+### General Patient Status (alive or dead)
 ```{r}
 general_status_pie =
   brca %>% 
@@ -207,7 +217,7 @@ general_status_pie =
 
 general_status_pie
 ```
-Patient status (alive or dead) based on tumor type classification
+### Patient status (alive or dead) based on tumor type
 ```{r}
 histology_status_plot =
   brca %>% 
@@ -231,9 +241,9 @@ histology_status_plot =
 
 histology_status_plot
 ```
-Looks like mucinous carcinoma causes slightly more deaths in comparison to the other types of carcinoma
+Mucinous carcinoma causes slightly more deaths in comparison to the other classifications of carcinoma.
 
-Patient status (alive or dead) based on tumor stage
+### Patient status (alive or dead) based on tumor stage
 ```{r}
 tumour_stage_status_plot =
   brca %>% 
