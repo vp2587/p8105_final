@@ -99,7 +99,7 @@ brca = brca_df_raw |>
 ## 3) Exploratory Data Analysis (EDA)
 
 
-### 1. Summary Tables
+## 1. Summary Tables
 Patient Characteristics Summary
 
 ```{r}
@@ -116,7 +116,7 @@ brca %>%
            na.rm = TRUE)
   )
 ```
-### 2. Distribution Visualization
+## 2. Distribution Visualization
 
 ### Age Distribution
 ```{r}
@@ -142,7 +142,7 @@ library(dplyr)
 library(ggplot2)
 ```
 
-### 3. Classification Visulization
+## 3. Classification Visulization
 
 ### Carcinoma Type Classification
 ```{r}
@@ -271,7 +271,7 @@ tumour_stage_status_plot
 As expected, deaths rate increases with tumor stage. 
 
 
-### 4. Stratified Summaries
+## 4. Stratified Summaries
 
 ### Protein levels by tumor stage
 ```{r}
