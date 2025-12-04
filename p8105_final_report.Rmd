@@ -142,6 +142,8 @@ library(dplyr)
 library(ggplot2)
 ```
 
+### 3. Classification Visulization
+
 ### Carcinoma Type Classification
 ```{r}
 carcinoma_type_pie =
