@@ -98,6 +98,166 @@ brca = brca_df_raw |>
 
 ## 3) Exploratory Data Analysis (EDA)
 
+
+### 1. Summary Tables
+Patient Characteristics Summary
+
+```{r}
+brca %>% 
+  select(age, gender, tumour_stage, histology, er_status, pr_status, her2_status, surgery_type, patient_status) |> 
+  skimr::skim()
+```
+Protein Biomarker Summary
+```{r}
+brca %>% 
+  summarise(
+    across(starts_with("protein"), 
+           list(mean = mean, sd = sd, min = min, max = max), 
+           na.rm = TRUE)
+  )
+```
+### 2. Distribution Visualization
+
+Age Distribution
+```{r}
+brca %>% 
+  ggplot(aes(x = age)) +
+  geom_histogram(bins = 30, fill = "steelblue", alpha = 0.7) +
+  labs(title = "Age Distribution of Breast Cancer Patients",
+       x = "Age", y = "Count")
+```
+Protein distribution
+```{r}
+brca %>%  
+  pivot_longer(starts_with("protein"), names_to = "protein", values_to = "value") |> 
+  ggplot(aes(x=value)) +
+  geom_density(fill="pink", alpha=0.4) +
+  facet_wrap(~protein, scales="free") +
+  labs(title = "Distribution of Protein Biomarkers")
+
+```
+Carcinoma Type Classification
+```{r setup, include = FALSE}
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+carcinoma_type_pie =
+  brca %>% 
+  count(histology) %>% 
+  mutate(
+    prop  = n / sum(n),
+    label = scales::percent(prop, accuracy = 0.1)
+  ) %>% 
+  ggplot(aes(x = "", y = prop, fill = histology)) +
+  geom_col(color = "white") +
+  coord_polar(theta = "y") +
+  geom_text(aes(label = label),
+            position = position_stack(vjust = 0.5),
+            size = 3) +
+  labs(title = "Carcinoma / Histology Classification",
+       fill  = "Histology") +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+carcinoma_type_pie
+```
+Tumor Stage Classification
+```{r}
+tumour_stage_pie =
+  brca %>% 
+  count(tumour_stage) %>% 
+  mutate(
+    prop  = n / sum(n),
+    label = scales::percent(prop, accuracy = 0.1)
+  ) |>
+  ggplot(aes(x = "", y = prop, fill = tumour_stage)) +
+  geom_col(color = "white") +
+  coord_polar(theta = "y") +
+  geom_text(aes(label = label),
+            position = position_stack(vjust = 0.5),
+            size = 3) +
+  labs(title = "Tumour Stage Classification",
+       fill  = "Tumour Stage") +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+tumour_stage_pie
+```
+Patient Status (alive vs dead) General
+```{r}
+general_status_pie =
+  brca %>% 
+  count(patient_status) %>% 
+  mutate(
+    prop  = n / sum(n),
+    label = scales::percent(prop, accuracy = 0.1)
+  ) %>% 
+  ggplot(aes(x = "", y = prop, fill = patient_status)) +
+  geom_col(color = "white") +
+  coord_polar(theta = "y") +
+  geom_text(aes(label = label),
+            position = position_stack(vjust = 0.5),
+            size = 3) +
+  labs(title = "Patient Status",
+       fill  = "Status") +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+general_status_pie
+```
+Patient status (alive or dead) based on tumor type classification
+```{r}
+histology_status_plot =
+  brca %>% 
+  count(histology, patient_status) %>% 
+  group_by(histology) %>% 
+  mutate(prop = n / sum(n)) %>% 
+  ggplot(aes(x = histology, y = prop, fill = patient_status)) +
+  geom_col(position = "fill", color = "white") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(
+    title = "Patient Status by Tumor Type (Histology)",
+    x = "Histology",
+    y = "Proportion within Histology",
+    fill = "Patient status"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 30, hjust = 1),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+histology_status_plot
+```
+Looks like mucinous carcinoma causes slightly more deaths in comparison to the other types of carcinoma
+
+Patient status (alive or dead) based on tumor stage
+```{r}
+tumour_stage_status_plot =
+  brca %>% 
+  count(tumour_stage, patient_status) %>% 
+  group_by(tumour_stage) %>% 
+  mutate(prop = n / sum(n)) %>% 
+  ggplot(aes(x = tumour_stage, y = prop, fill = patient_status)) +
+  geom_col(position = "fill", color = "white") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(
+    title = "Patient Status by Tumour Stage",
+    x = "Tumour stage",
+    y = "Proportion within Stage",
+    fill = "Patient status"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+
+tumour_stage_status_plot
+```
+Unsurprisingly, deaths rate increases with tumor stage. 
+
 ### Overall summaries
 - Age: mean, SD, range.
 - Tumour stage and histology: counts/percent.
