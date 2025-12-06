@@ -687,11 +687,13 @@ cohort.</p>
            na.rm = TRUE)
   )</code></pre>
 <pre><code>## # A tibble: 1 × 16
-##   protein1_mean protein1_sd protein1_min protein1_max protein2_mean protein2_sd protein2_min protein2_max protein3_mean protein3_sd
-##           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;
-## 1       -0.0300       0.564        -2.34         1.59         0.947       0.912       -0.979         3.40       -0.0902       0.585
-## # ℹ 6 more variables: protein3_min &lt;dbl&gt;, protein3_max &lt;dbl&gt;, protein4_mean &lt;dbl&gt;, protein4_sd &lt;dbl&gt;, protein4_min &lt;dbl&gt;,
-## #   protein4_max &lt;dbl&gt;</code></pre>
+##   protein1_mean protein1_sd protein1_min protein1_max protein2_mean protein2_sd
+##           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;
+## 1       -0.0300       0.564        -2.34         1.59         0.947       0.912
+## # ℹ 10 more variables: protein2_min &lt;dbl&gt;, protein2_max &lt;dbl&gt;,
+## #   protein3_mean &lt;dbl&gt;, protein3_sd &lt;dbl&gt;, protein3_min &lt;dbl&gt;,
+## #   protein3_max &lt;dbl&gt;, protein4_mean &lt;dbl&gt;, protein4_sd &lt;dbl&gt;,
+## #   protein4_min &lt;dbl&gt;, protein4_max &lt;dbl&gt;</code></pre>
 <p>This table describes the four anonymized protein biomarkers in the
 dataset by reporting their mean, standard deviation, and observed range.
 These summaries help us see the typical expression level and variability
@@ -1091,13 +1093,24 @@ protein_cor</code></pre>
 <pre class="r"><code>corrplot(protein_cor, method = &quot;color&quot;, tl.col = &quot;black&quot;)</code></pre>
 <p><img src="final_report_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>To assess how similar the four protein biomarkers are to one another,
-we computed a correlation matrix of Protein1–Protein4. This helps us
-understand whether the proteins provide largely redundant information or
-capture distinct aspects of tumour biology. The resulting correlations
-were generally (low/moderate/high — fill in after you look at the
-matrix), suggesting that while some proteins are related, no pair is
-perfectly correlated. This supports including multiple protein markers
-in our models, while remaining aware of potential collinearity.</p>
+we computed a correlation matrix for Protein1–Protein4. This helps us
+evaluate whether the proteins provide overlapping information or capture
+different biological signals. Overall, the correlations were modest to
+moderate in magnitude. Protein1 showed moderate positive correlations
+with Protein2 and Protein4, while Protein2 and Protein3 displayed a
+moderate negative correlation. Other pairs were only weakly correlated.
+Importantly, no protein pair showed a very strong (|r| &gt; 0.8)
+correlation, indicating that none of the biomarkers are redundant. This
+supports the inclusion of multiple protein markers in downstream models
+while keeping collinearity concerns relatively low.</p>
+<p>The patterns and correlations uncovered above — including moderate
+relationships among certain proteins and no strong differences in
+biomarker levels by tumor stage/histology — guide our next steps. With
+this evidence, we proceed to fit a logistic regression to predict
+patient status, followed by ANOVA to test for differences in biomarker
+expression across clinical groups, and finally survival analysis. These
+analyses build directly on the exploratory structure identified in this
+section.</p>
 </div>
 </div>
 </div>
@@ -1138,19 +1151,19 @@ outcomes across different groups.</p>
 <pre class="r"><code>brca_mlr %&gt;% 
   broom::tidy(exponentiate = TRUE, conf.int = TRUE)</code></pre>
 <pre><code>## # A tibble: 11 × 7
-##    term                                    estimate std.error statistic p.value conf.low conf.high
-##    &lt;chr&gt;                                      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
-##  1 (Intercept)                               0.0874    0.811     -3.01  0.00264   0.0172     0.417
-##  2 age                                       1.00      0.0112     0.287 0.774     0.981      1.03 
-##  3 tumour_stage.L                            1.33      0.332      0.852 0.394     0.699      2.59 
-##  4 tumour_stage.Q                            0.950     0.238     -0.218 0.828     0.591      1.51 
-##  5 surgery_typeModified Radical Mastectomy   1.75      0.463      1.21  0.225     0.723      4.52 
-##  6 surgery_typeOther                         2.24      0.441      1.83  0.0670    0.972      5.57 
-##  7 surgery_typeSimple Mastectomy             1.63      0.493      0.995 0.320     0.625      4.41 
-##  8 protein1                                  0.846     0.277     -0.602 0.547     0.492      1.46 
-##  9 protein2                                  1.39      0.175      1.89  0.0583    0.991      1.98 
-## 10 protein3                                  1.34      0.262      1.12  0.264     0.799      2.24 
-## 11 protein4                                  1.44      0.250      1.47  0.143     0.892      2.39</code></pre>
+##    term                  estimate std.error statistic p.value conf.low conf.high
+##    &lt;chr&gt;                    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+##  1 (Intercept)             0.0874    0.811     -3.01  0.00264   0.0172     0.417
+##  2 age                     1.00      0.0112     0.287 0.774     0.981      1.03 
+##  3 tumour_stage.L          1.33      0.332      0.852 0.394     0.699      2.59 
+##  4 tumour_stage.Q          0.950     0.238     -0.218 0.828     0.591      1.51 
+##  5 surgery_typeModified…   1.75      0.463      1.21  0.225     0.723      4.52 
+##  6 surgery_typeOther       2.24      0.441      1.83  0.0670    0.972      5.57 
+##  7 surgery_typeSimple M…   1.63      0.493      0.995 0.320     0.625      4.41 
+##  8 protein1                0.846     0.277     -0.602 0.547     0.492      1.46 
+##  9 protein2                1.39      0.175      1.89  0.0583    0.991      1.98 
+## 10 protein3                1.34      0.262      1.12  0.264     0.799      2.24 
+## 11 protein4                1.44      0.250      1.47  0.143     0.892      2.39</code></pre>
 <p>Model coefficient estimates were expressed as odds ratios. At the
 0.05 level, none of the predictors were statistically significant,
 though the proteins generally expressed a weak positive association with
