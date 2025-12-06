@@ -345,7 +345,7 @@ This plot shows the distribution of protein levels across the three histologic t
 ```
 
 
-# 4) Logistic regression: Predicting patient status
+# 4) Multiple linear regression: Predicting patient status
 
 ### Model specification
 - Outcome: patient_status (Alive vs Dead).
@@ -354,7 +354,18 @@ This plot shows the distribution of protein levels across the three histologic t
 
 ### Model fitting
 ```{r}
+brca =
+  brca %>% 
+  mutate(
+    target = ifelse(patient_status == "Dead", 1, 0)
+  )
 
+brca_mlr =
+  brca %>%  
+  glm(target ~ age + tumour_stage + surgery_type + protein1 + protein2 +
+        protein3 + protein4, data = .,
+      family = binomial(link = "logit")
+  )
 ```
 
 ### Model results
