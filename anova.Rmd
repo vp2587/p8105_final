@@ -1,0 +1,251 @@
+---
+title: "ANOVA"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+
+library(tidyverse)
+library(janitor)
+library(broom)
+library(ggplot2)
+library(survminer)
+library(pROC)        
+library(survival)
+library(dplyr)
+library(modelr)
+library(corrplot)
+library(car)
+```
+
+```{r, include = FALSE}
+brca_df_raw = read_csv("BRCA.csv") |> 
+  janitor::clean_names() |> 
+  filter(!is.na(patient_id)) #remove empty rows at the bottom
+```
+
+```{r, include = FALSE}
+brca = brca_df_raw |> 
+  mutate( #categorical variables
+    gender       = factor(gender),
+    tumour_stage = factor(tumour_stage,
+                          levels = c("I", "II", "III"),
+                          ordered = TRUE),
+    histology    = factor(histology),
+    er_status    = factor(er_status),
+    pr_status    = factor(pr_status),
+    her2_status  = factor(her2_status),
+    surgery_type = factor(surgery_type),
+    patient_status = factor(patient_status,
+                            levels = c("Alive", "Dead")),
+    #date variables
+    date_of_surgery     = as.Date(date_of_surgery, format = "%d-%b-%y"),
+    date_of_last_visit  = as.Date(date_of_last_visit, format = "%d-%b-%y"),
+
+    # survival
+    follow_up_time = as.numeric(date_of_last_visit - date_of_surgery),
+    event = case_when(
+      patient_status == "Dead"  ~ 1L,
+      patient_status == "Alive" ~ 0L,
+      TRUE                      ~ NA_integer_
+    )
+  )
+```
+
+# 5) ANOVA: Protein biomarkers across clinical groups
+```{r}
+# identify protein biomarker columns (protein1–protein4)
+protein_vars <- names(brca)[grepl("^protein", names(brca))]
+```
+
+##### Do protein levels differ by tumour stage?
+```{r}
+# group means by tumour_stage
+means_tumour_stage <- brca |>
+  select(tumour_stage, all_of(protein_vars)) |>
+  pivot_longer(
+    cols = all_of(protein_vars),
+    names_to = "biomarker",
+    values_to = "value"
+  ) |>
+  group_by(tumour_stage, biomarker) |>
+  summarise(
+    mean_value = mean(value, na.rm = TRUE),
+    n = sum(!is.na(value)),
+    .groups = "drop"
+  )
+
+# one-way ANOVA for each protein ~ tumour_stage
+anova_tumour_stage <- protein_vars |>
+  lapply(function(p) {
+    fit <- aov(reformulate("tumour_stage", response = p), data = brca)
+    tidy(fit) |>
+      slice(1) |>
+      transmute(
+        biomarker = p,
+        df = df,
+        f_statistic = statistic,
+        p_value = p.value
+      )
+  }) |>
+  bind_rows() |>
+  mutate(p_adj = p.adjust(p_value, method = "BH"))
+
+means_tumour_stage
+anova_tumour_stage
+```
+
+For all four proteins (protein1–protein4), the global ANOVA tests were not statistically significant (all BH-adjusted p-values > 0.77). Thus, there is no statistical evidence of differences in biomarker expression by tumour stage in this cohort, and post-hoc pairwise comparisons were not pursued. Although small numerical differences in mean protein levels were observed, these differences were not statistically significant. This suggests that, in this dataset, tumour stage alone does not explain variation in protein biomarker expression. This could be due to biological similarity across stages, high within-group variability, or limited power for detecting subtle effects.
+
+##### Do protein levels differ by histology?
+```{r}
+# group means by histology
+means_histology <- brca |>
+  select(histology, all_of(protein_vars)) |>
+  pivot_longer(
+    cols = all_of(protein_vars),
+    names_to = "biomarker",
+    values_to = "value"
+  ) |>
+  group_by(histology, biomarker) |>
+  summarise(
+    mean_value = mean(value, na.rm = TRUE),
+    n = sum(!is.na(value)),
+    .groups = "drop"
+  )
+
+# one-way ANOVA for each protein ~ histology
+anova_histology <- protein_vars |>
+  lapply(function(p) {
+    fit <- aov(reformulate("histology", response = p), data = brca)
+    tidy(fit) |>
+      slice(1) |>
+      transmute(
+        biomarker = p,
+        df = df,
+        f_statistic = statistic,
+        p_value = p.value
+      )
+  }) |>
+  bind_rows() |>
+  mutate(p_adj = p.adjust(p_value, method = "BH"))
+
+means_histology
+anova_histology
+```
+
+Across histologic subtypes, protein levels were visually and statistically similar, with substantial overlap between groups. All BH-adjusted ANOVA p-values were > 0.36, indicating no detectable expression differences by histology. Consequently, post-hoc pairwise comparisons were not performed.
+
+Because no p-values are statistically significant, we check ANOVA assumptions!
+
+##### Normality (per group per protein)
+```{r}
+for (p in protein_vars) {
+print(
+ggqqplot(brca, x = p, facet.by = "tumour_stage",
+title = paste("QQ-Plot:", p, "by tumour stage"))
+)
+}
+```
+
+The QQ-plots for each protein by tumour stage were reasonably linear, suggesting that the normality assumption is acceptable for these ANOVA models.
+
+##### Homogeneity of variances (Levene’s Test)
+```{r}
+for (p in protein_vars) {
+  print(p)
+  print(leveneTest(brca[[p]] ~ brca$tumour_stage))
+}
+```
+
+Levene’s tests indicated no significant variance differences across tumour stage groups for any protein (all p > 0.18). Thus, the assumption of equal variances is not violated for any protein, and standard one-way ANOVA is appropriate and valid. Overall, protein levels do not significantly differ by tumour stage in this dataset — not because ANOVA assumptions failed, but because any true effects are likely small relative to within-group variability.
+
+##### Boxplot — Proteins by Tumour Stage
+```{r}
+# Identify proteins
+protein_vars <- names(brca)[grepl("^protein", names(brca))]
+
+# Pivot long
+brca_long_stage <- brca |>
+  select(tumour_stage, all_of(protein_vars)) |>
+  filter(!is.na(tumour_stage)) |>
+  pivot_longer(
+    cols = all_of(protein_vars),
+    names_to = "protein",
+    values_to = "value"
+  )
+
+# Boxplots 
+ggplot(brca_long_stage, aes(x = tumour_stage, y = value, fill = tumour_stage)) +
+  geom_boxplot(outlier.alpha = 0.2, width = 0.6) +
+  geom_jitter(alpha = 0.4, width = 0.15, size = 1) +
+  facet_wrap(~ protein, scales = "free_y") +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Protein Levels by Tumour Stage",
+    x = "Tumour Stage",
+    y = "Protein Expression"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "none",
+    strip.text = element_text(size = 12),
+    axis.title = element_text(size = 12),
+    plot.title = element_text(size = 14, face = "bold")
+  )
+
+```
+
+Protein1 expression showed very similar distributions across tumour stages I, II, and III. Median levels were close to zero in all three groups, and the interquartile ranges largely overlapped. Although a few outliers were present in each stage, the overall spread of values was comparable, suggesting no meaningful differences in Protein1 expression by tumor stage in this dataset. 
+This interpretation perfectly matches our ANOVA result where p = 0.50 (not significant) and Levene’s test where p = 0.18 (equal variances). Similar patterns were observed for protein2–protein4, with substantial overlap in distributions across tumor stages.
+Protein1 expression showed very similar distributions across tumour stages I, II, and III. Median levels were close to zero in all three groups, and the interquartile ranges largely overlapped. Although a few outliers were present in each stage, the overall spread of values was comparable, suggesting no meaningful differences in Protein1 expression by tumour stage in this dataset. 
+This interpretation perfectly matches our ANOVA result where p = 0.50 (not significant) and Levene’s test where p = 0.18 (equal variances). Similar patterns were observed for protein2–protein4, with substantial overlap in distributions across tumour stages.
+
+##### Boxplot - Protein by Histology
+```{r}
+# Identify protein variables
+protein_vars <- names(brca)[grepl("^protein", names(brca))]
+
+# Pivot to long format
+brca_long_hist <- brca |>
+  select(histology, all_of(protein_vars)) |>
+  filter(!is.na(histology)) |>
+  pivot_longer(
+    cols = all_of(protein_vars),
+    names_to = "protein",
+    values_to = "value"
+  )
+
+# Plot
+ggplot(brca_long_hist, aes(x = histology, y = value, fill = histology)) +
+  geom_boxplot(outlier.alpha = 0.2, width = 0.6) +
+  geom_jitter(alpha = 0.4, width = 0.15, size = 1) +
+  facet_wrap(~ protein, scales = "free_y") +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Protein Levels by Histology",
+    x = "Histologic Subtype",
+    y = "Protein Expression"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "none",
+    strip.text = element_text(size = 12),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title = element_text(size = 12),
+    plot.title = element_text(size = 14, face = "bold")
+  )
+
+```
+
+Across histologic subtypes, protein levels were visually similar with substantial overlap between groups, indicating no detectable expression differences by histology. This is consistent with our non-significant ANOVA results (all adjusted p-values > 0.36).
+
+Final Conclusion: Overall, there was no evidence that protein biomarker expression differed meaningfully by tumour stage or histologic subtype in this dataset. Although there were small differences in average levels, the large amount of variability within groups and the overlap in distributions suggest that these biomarkers do not strongly reflect clinical disease stage or histology on their own. These findings indicate that additional clinical or molecular factors are likely needed to explain differences in disease characteristics, and that the proteins available in this dataset may have limited value as standalone indicators of disease severity.

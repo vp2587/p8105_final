@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>ANOVA</title>
+
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Predicting Breast Cancer Outcomes from Clinical Features and Protein Biomarkers</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About Us</a>
+</li>
+<li>
+  <a href="multi_log_reg.html">Multiple Logisitic Regression</a>
+</li>
+<li>
+  <a href="data_processing.html">Data Processing</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">ANOVA</h1>
+
+</div>
+
+
+<div id="anova-protein-biomarkers-across-clinical-groups"
+class="section level1">
+<h1>5) ANOVA: Protein biomarkers across clinical groups</h1>
+<pre class="r"><code># identify protein biomarker columns (protein1–protein4)
+protein_vars &lt;- names(brca)[grepl(&quot;^protein&quot;, names(brca))]</code></pre>
+<div id="do-protein-levels-differ-by-tumour-stage"
+class="section level5">
+<h5>Do protein levels differ by tumour stage?</h5>
+<pre class="r"><code># group means by tumour_stage
+means_tumour_stage &lt;- brca |&gt;
+  select(tumour_stage, all_of(protein_vars)) |&gt;
+  pivot_longer(
+    cols = all_of(protein_vars),
+    names_to = &quot;biomarker&quot;,
+    values_to = &quot;value&quot;
+  ) |&gt;
+  group_by(tumour_stage, biomarker) |&gt;
+  summarise(
+    mean_value = mean(value, na.rm = TRUE),
+    n = sum(!is.na(value)),
+    .groups = &quot;drop&quot;
+  )
+
+# one-way ANOVA for each protein ~ tumour_stage
+anova_tumour_stage &lt;- protein_vars |&gt;
+  lapply(function(p) {
+    fit &lt;- aov(reformulate(&quot;tumour_stage&quot;, response = p), data = brca)
+    tidy(fit) |&gt;
+      slice(1) |&gt;
+      transmute(
+        biomarker = p,
+        df = df,
+        f_statistic = statistic,
+        p_value = p.value
+      )
+  }) |&gt;
+  bind_rows() |&gt;
+  mutate(p_adj = p.adjust(p_value, method = &quot;BH&quot;))
+
+means_tumour_stage</code></pre>
+<pre><code>## # A tibble: 12 × 4
+##    tumour_stage biomarker mean_value     n
+##    &lt;ord&gt;        &lt;chr&gt;          &lt;dbl&gt; &lt;int&gt;
+##  1 I            protein1    -0.0144     64
+##  2 I            protein2     1.00       64
+##  3 I            protein3    -0.165      64
+##  4 I            protein4     0.0378     64
+##  5 II           protein1    -0.00773   189
+##  6 II           protein2     0.965     189
+##  7 II           protein3    -0.0654    189
+##  8 II           protein4     0.0180    189
+##  9 III          protein1    -0.0942     81
+## 10 III          protein2     0.862      81
+## 11 III          protein3    -0.0888     81
+## 12 III          protein4    -0.0315     81</code></pre>
+<pre class="r"><code>anova_tumour_stage</code></pre>
+<pre><code>## # A tibble: 4 × 5
+##   biomarker    df f_statistic p_value p_adj
+##   &lt;chr&gt;     &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1 protein1      2       0.697   0.499 0.777
+## 2 protein2      2       0.498   0.608 0.777
+## 3 protein3      2       0.693   0.501 0.777
+## 4 protein4      2       0.253   0.777 0.777</code></pre>
+<p>For all four proteins (protein1–protein4), the global ANOVA tests
+were not statistically significant (all BH-adjusted p-values &gt; 0.77).
+Thus, there is no statistical evidence of differences in biomarker
+expression by tumour stage in this cohort, and post-hoc pairwise
+comparisons were not pursued. Although small numerical differences in
+mean protein levels were observed, these differences were not
+statistically significant. This suggests that, in this dataset, tumour
+stage alone does not explain variation in protein biomarker expression.
+This could be due to biological similarity across stages, high
+within-group variability, or limited power for detecting subtle
+effects.</p>
+</div>
+<div id="do-protein-levels-differ-by-histology" class="section level5">
+<h5>Do protein levels differ by histology?</h5>
+<pre class="r"><code># group means by histology
+means_histology &lt;- brca |&gt;
+  select(histology, all_of(protein_vars)) |&gt;
+  pivot_longer(
+    cols = all_of(protein_vars),
+    names_to = &quot;biomarker&quot;,
+    values_to = &quot;value&quot;
+  ) |&gt;
+  group_by(histology, biomarker) |&gt;
+  summarise(
+    mean_value = mean(value, na.rm = TRUE),
+    n = sum(!is.na(value)),
+    .groups = &quot;drop&quot;
+  )
+
+# one-way ANOVA for each protein ~ histology
+anova_histology &lt;- protein_vars |&gt;
+  lapply(function(p) {
+    fit &lt;- aov(reformulate(&quot;histology&quot;, response = p), data = brca)
+    tidy(fit) |&gt;
+      slice(1) |&gt;
+      transmute(
+        biomarker = p,
+        df = df,
+        f_statistic = statistic,
+        p_value = p.value
+      )
+  }) |&gt;
+  bind_rows() |&gt;
+  mutate(p_adj = p.adjust(p_value, method = &quot;BH&quot;))
+
+means_histology</code></pre>
+<pre><code>## # A tibble: 12 × 4
+##    histology                      biomarker mean_value     n
+##    &lt;fct&gt;                          &lt;chr&gt;          &lt;dbl&gt; &lt;int&gt;
+##  1 Infiltrating Ductal Carcinoma  protein1    -0.0500    233
+##  2 Infiltrating Ductal Carcinoma  protein2     0.930     233
+##  3 Infiltrating Ductal Carcinoma  protein3    -0.0804    233
+##  4 Infiltrating Ductal Carcinoma  protein4     0.00905   233
+##  5 Infiltrating Lobular Carcinoma protein1    -0.00522    89
+##  6 Infiltrating Lobular Carcinoma protein2     1.03       89
+##  7 Infiltrating Lobular Carcinoma protein3    -0.139      89
+##  8 Infiltrating Lobular Carcinoma protein4    -0.00825    89
+##  9 Mucinous Carcinoma             protein1     0.174      12
+## 10 Mucinous Carcinoma             protein2     0.684      12
+## 11 Mucinous Carcinoma             protein3     0.0840     12
+## 12 Mucinous Carcinoma             protein4     0.159      12</code></pre>
+<pre class="r"><code>anova_histology</code></pre>
+<pre><code>## # A tibble: 4 × 5
+##   biomarker    df f_statistic p_value p_adj
+##   &lt;chr&gt;     &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1 protein1      2       1.02    0.362 0.557
+## 2 protein2      2       0.887   0.413 0.557
+## 3 protein3      2       0.876   0.417 0.557
+## 4 protein4      2       0.372   0.690 0.690</code></pre>
+<p>Across histologic subtypes, protein levels were visually and
+statistically similar, with substantial overlap between groups. All
+BH-adjusted ANOVA p-values were &gt; 0.36, indicating no detectable
+expression differences by histology. Consequently, post-hoc pairwise
+comparisons were not performed.</p>
+<p>Because no p-values are statistically significant, we check ANOVA
+assumptions!</p>
+</div>
+<div id="normality-per-group-per-protein" class="section level5">
+<h5>Normality (per group per protein)</h5>
+<pre class="r"><code>for (p in protein_vars) {
+print(
+ggqqplot(brca, x = p, facet.by = &quot;tumour_stage&quot;,
+title = paste(&quot;QQ-Plot:&quot;, p, &quot;by tumour stage&quot;))
+)
+}</code></pre>
+<p><img src="anova_files/figure-html/unnamed-chunk-6-1.png" width="672" /><img src="anova_files/figure-html/unnamed-chunk-6-2.png" width="672" /><img src="anova_files/figure-html/unnamed-chunk-6-3.png" width="672" /><img src="anova_files/figure-html/unnamed-chunk-6-4.png" width="672" /></p>
+<p>The QQ-plots for each protein by tumour stage were reasonably linear,
+suggesting that the normality assumption is acceptable for these ANOVA
+models.</p>
+</div>
+<div id="homogeneity-of-variances-levenes-test" class="section level5">
+<h5>Homogeneity of variances (Levene’s Test)</h5>
+<pre class="r"><code>for (p in protein_vars) {
+  print(p)
+  print(leveneTest(brca[[p]] ~ brca$tumour_stage))
+}</code></pre>
+<pre><code>## [1] &quot;protein1&quot;
+## Levene&#39;s Test for Homogeneity of Variance (center = median)
+##        Df F value Pr(&gt;F)
+## group   2  1.7094 0.1826
+##       331               
+## [1] &quot;protein2&quot;
+## Levene&#39;s Test for Homogeneity of Variance (center = median)
+##        Df F value Pr(&gt;F)
+## group   2  0.5266 0.5911
+##       331               
+## [1] &quot;protein3&quot;
+## Levene&#39;s Test for Homogeneity of Variance (center = median)
+##        Df F value Pr(&gt;F)
+## group   2  0.6378 0.5291
+##       331               
+## [1] &quot;protein4&quot;
+## Levene&#39;s Test for Homogeneity of Variance (center = median)
+##        Df F value Pr(&gt;F)
+## group   2  0.0149 0.9852
+##       331</code></pre>
+<p>Levene’s tests indicated no significant variance differences across
+tumour stage groups for any protein (all p &gt; 0.18). Thus, the
+assumption of equal variances is not violated for any protein, and
+standard one-way ANOVA is appropriate and valid. Overall, protein levels
+do not significantly differ by tumour stage in this dataset — not
+because ANOVA assumptions failed, but because any true effects are
+likely small relative to within-group variability.</p>
+</div>
+<div id="boxplot-proteins-by-tumour-stage" class="section level5">
+<h5>Boxplot — Proteins by Tumour Stage</h5>
+<pre class="r"><code># Identify proteins
+protein_vars &lt;- names(brca)[grepl(&quot;^protein&quot;, names(brca))]
+
+# Pivot long
+brca_long_stage &lt;- brca |&gt;
+  select(tumour_stage, all_of(protein_vars)) |&gt;
+  filter(!is.na(tumour_stage)) |&gt;
+  pivot_longer(
+    cols = all_of(protein_vars),
+    names_to = &quot;protein&quot;,
+    values_to = &quot;value&quot;
+  )
+
+# Boxplots 
+ggplot(brca_long_stage, aes(x = tumour_stage, y = value, fill = tumour_stage)) +
+  geom_boxplot(outlier.alpha = 0.2, width = 0.6) +
+  geom_jitter(alpha = 0.4, width = 0.15, size = 1) +
+  facet_wrap(~ protein, scales = &quot;free_y&quot;) +
+  scale_fill_brewer(palette = &quot;Set2&quot;) +
+  labs(
+    title = &quot;Protein Levels by Tumour Stage&quot;,
+    x = &quot;Tumour Stage&quot;,
+    y = &quot;Protein Expression&quot;
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = &quot;none&quot;,
+    strip.text = element_text(size = 12),
+    axis.title = element_text(size = 12),
+    plot.title = element_text(size = 14, face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="anova_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Protein1 expression showed very similar distributions across tumour
+stages I, II, and III. Median levels were close to zero in all three
+groups, and the interquartile ranges largely overlapped. Although a few
+outliers were present in each stage, the overall spread of values was
+comparable, suggesting no meaningful differences in Protein1 expression
+by tumor stage in this dataset. This interpretation perfectly matches
+our ANOVA result where p = 0.50 (not significant) and Levene’s test
+where p = 0.18 (equal variances). Similar patterns were observed for
+protein2–protein4, with substantial overlap in distributions across
+tumor stages. Protein1 expression showed very similar distributions
+across tumour stages I, II, and III. Median levels were close to zero in
+all three groups, and the interquartile ranges largely overlapped.
+Although a few outliers were present in each stage, the overall spread
+of values was comparable, suggesting no meaningful differences in
+Protein1 expression by tumour stage in this dataset. This interpretation
+perfectly matches our ANOVA result where p = 0.50 (not significant) and
+Levene’s test where p = 0.18 (equal variances). Similar patterns were
+observed for protein2–protein4, with substantial overlap in
+distributions across tumour stages.</p>
+</div>
+<div id="boxplot---protein-by-histology" class="section level5">
+<h5>Boxplot - Protein by Histology</h5>
+<pre class="r"><code># Identify protein variables
+protein_vars &lt;- names(brca)[grepl(&quot;^protein&quot;, names(brca))]
+
+# Pivot to long format
+brca_long_hist &lt;- brca |&gt;
+  select(histology, all_of(protein_vars)) |&gt;
+  filter(!is.na(histology)) |&gt;
+  pivot_longer(
+    cols = all_of(protein_vars),
+    names_to = &quot;protein&quot;,
+    values_to = &quot;value&quot;
+  )
+
+# Plot
+ggplot(brca_long_hist, aes(x = histology, y = value, fill = histology)) +
+  geom_boxplot(outlier.alpha = 0.2, width = 0.6) +
+  geom_jitter(alpha = 0.4, width = 0.15, size = 1) +
+  facet_wrap(~ protein, scales = &quot;free_y&quot;) +
+  scale_fill_brewer(palette = &quot;Set2&quot;) +
+  labs(
+    title = &quot;Protein Levels by Histology&quot;,
+    x = &quot;Histologic Subtype&quot;,
+    y = &quot;Protein Expression&quot;
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = &quot;none&quot;,
+    strip.text = element_text(size = 12),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title = element_text(size = 12),
+    plot.title = element_text(size = 14, face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="anova_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Across histologic subtypes, protein levels were visually similar with
+substantial overlap between groups, indicating no detectable expression
+differences by histology. This is consistent with our non-significant
+ANOVA results (all adjusted p-values &gt; 0.36).</p>
+<p>Final Conclusion: Overall, there was no evidence that protein
+biomarker expression differed meaningfully by tumour stage or histologic
+subtype in this dataset. Although there were small differences in
+average levels, the large amount of variability within groups and the
+overlap in distributions suggest that these biomarkers do not strongly
+reflect clinical disease stage or histology on their own. These findings
+indicate that additional clinical or molecular factors are likely needed
+to explain differences in disease characteristics, and that the proteins
+available in this dataset may have limited value as standalone
+indicators of disease severity.</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
