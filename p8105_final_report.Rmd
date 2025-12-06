@@ -105,6 +105,8 @@ brca %>%
   select(age, gender, tumour_stage, histology, er_status, pr_status, her2_status, surgery_type, patient_status) |> 
   skimr::skim()
 ```
+This table summarizes the main clinical characteristics of the r nrow(brca) patients in the dataset, including age, gender, tumour stage, histology, hormone receptor status, HER2 status, surgery type, and vital status at last follow up. It gives basic statistics such as the mean and spread for age, as well as counts and percentages for each category, and provides an overall picture of who is represented in this breast cancer cohort.
+
 ### Protein Biomarker Summary
 ```{r}
 brca %>% 
@@ -114,6 +116,8 @@ brca %>%
            na.rm = TRUE)
   )
 ```
+This table describes the four anonymized protein biomarkers in the dataset by reporting their mean, standard deviation, and observed range. These summaries help us see the typical expression level and variability of each protein across patients, which is useful context for later modeling and group comparisons.
+
 ## 2. Distribution Visualization
 
 ### Age Distribution
@@ -124,6 +128,8 @@ brca %>%
   labs(title = "Age Distribution of Breast Cancer Patients",
        x = "Age", y = "Count")
 ```
+This histogram shows how patient age is distributed in the cohort. It highlights the most common age range at diagnosis or surgery and allows us to see whether the sample is concentrated in midlife, older age, or spread more evenly across the adult lifespan.
+
 ### Protein distribution
 ```{r}
 brca %>%  
@@ -132,8 +138,8 @@ brca %>%
   geom_density(fill="pink", alpha=0.4) +
   facet_wrap(~protein, scales="free") +
   labs(title = "Distribution of Protein Biomarkers")
-
 ```
+These density plots display the distribution of each of the four protein biomarkers across all patients. By looking at the shapes of the curves, we can see whether each biomarker is approximately symmetric or skewed, whether there are long tails, and whether any proteins appear to have multiple modes or outlying values.
 
 ## 3. Classification Visulization
 
@@ -159,6 +165,8 @@ carcinoma_type_pie =
 
 carcinoma_type_pie
 ```
+This pie chart summarizes the distribution of histologic tumour types in the dataset. The largest slice corresponds to infiltrating ductal carcinoma, reflecting that most patients in this cohort have IDC, while infiltrating lobular carcinoma and mucinous carcinoma make up smaller proportions. This mirrors the expected pattern in clinical practice, where IDC is the most common invasive breast cancer subtype.
+
 Infiltrating ductal carcinoma (IDC) is the most common breast cancer type. It begins in the milk ducts and grows into the surrounding breast tissue. As it progresses, IDC can spread through the lymphatic system or bloodstream to other parts of the body.
 
 Mucinous carcinoma is a breast cancer subtype in which tumor cells grow within mucin, the main component of mucus. Mucin normally supports healthy cell function, but in this tumor type, the mucin produced by cancer cells becomes part of the mass. Although mucinous tumors can occur elsewhere in the body, they most often appear in the breast.
@@ -187,7 +195,7 @@ tumour_stage_pie =
 
 tumour_stage_pie
 ```
-
+This pie chart shows how patients are distributed across tumour stages I, II, and III at the time of surgery. It allows us to see whether the dataset is dominated by early-stage disease, more advanced tumours, or a mix of both, which is important context when interpreting survival and biomarker patterns.
 
 
 ### General Patient Status (alive or dead)
@@ -212,6 +220,8 @@ general_status_pie =
 
 general_status_pie
 ```
+This pie chart displays the overall proportion of patients who were alive versus dead at their last recorded visit. It provides a simple summary of outcomes in this cohort and indicates the baseline event rate that our predictive models will try to capture.
+
 ### Patient status (alive or dead) based on tumor type
 ```{r}
 histology_status_plot =
@@ -236,7 +246,7 @@ histology_status_plot =
 
 histology_status_plot
 ```
-Mucinous carcinoma causes slightly more deaths in comparison to the other classifications of carcinoma.
+This stacked bar plot shows the proportion of patients who were alive or dead within each histologic tumour type. By comparing the height of the “dead” segment across histologies, we can see whether certain carcinoma types in this sample are associated with a higher proportion of deaths. In this dataset, mucinous carcinoma appears to have a slightly higher death proportion than the other histologic groups, although the absolute number of mucinous cases is relatively small.
 
 ### Patient status (alive or dead) based on tumor stage
 ```{r}
@@ -261,21 +271,55 @@ tumour_stage_status_plot =
 
 tumour_stage_status_plot
 ```
-As expected, deaths rate increases with tumor stage. 
+This stacked bar plot displays the proportion of patients who were alive or dead within each tumour stage. The figure shows that the fraction of deaths increases from stage I to stage III, consistent with the clinical expectation that more advanced tumours are associated with worse outcomes. This pattern supports using tumour stage as an important predictor in subsequent survival and logistic regression analyses.
 
 
 ## 4. Stratified Summaries
 
 ### Protein levels by tumor stage
 ```{r}
-
+brca %>% 
+  pivot_longer(starts_with("protein"),
+               names_to = "protein",
+               values_to = "value") %>% 
+  ggplot(aes(x = tumour_stage, y = value, fill = tumour_stage)) +
+  geom_boxplot(alpha = 0.8) +
+  facet_wrap(~ protein, scales = "free_y") +
+  labs(
+    title = "Protein Levels by Tumour Stage",
+    x = "Tumour Stage",
+    y = "Protein Level"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "none"
+  )
 ```
+This plot compares the distribution of each protein biomarker across tumour stages I, II, and III. Each protein is shown in a separate panel to make the differences easier to see. The boxplots highlight how biomarker levels change with increasing stage, allowing us to visually assess whether later-stage tumors tend to have higher or lower protein expression. This helps identify proteins that may be associated with disease progression.
 
-### Protein levels by tumor type
+### Protein levels by tumor type (histology)
 ```{r}
-
+brca %>% 
+  pivot_longer(starts_with("protein"),
+               names_to = "protein",
+               values_to = "value") %>% 
+  ggplot(aes(x = histology, y = value, fill = histology)) +
+  geom_boxplot(alpha = 0.8) +
+  facet_wrap(~ protein, scales = "free_y") +
+  labs(
+    title = "Protein Levels by Tumor Type (Histology)",
+    x = "Histology",
+    y = "Protein Level"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 25, hjust = 1),
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "none"
+  )
 ```
-
+This plot shows the distribution of protein levels across the three histologic tumour types in the dataset: infiltrating ductal carcinoma, mucinous carcinoma, and infiltrating lobular carcinoma. By examining the boxplots for each protein within each histology group, we can explore whether certain biomarker patterns are more characteristic of specific tumour types. This can reveal potential diagnostic or subtype-specific differences in protein expression.
 
 
 ### Overall summaries
