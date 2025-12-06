@@ -16,7 +16,7 @@
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -33,9 +33,10 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -220,9 +221,6 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
 
 
 
@@ -329,10 +327,10 @@ div.tocify {
   <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="about.html">About Us</a>
+  <a href="data_processing.html">Data Processing</a>
 </li>
 <li>
-  <a href="data_processing.html">Data Processing</a>
+  <a href="EDA.html">Exploratory Data Analysis</a>
 </li>
 <li>
   <a href="multi_log_reg.html">Multiple Logisitic Regression</a>
@@ -346,20 +344,21 @@ div.tocify {
 <li>
   <a href="discussion.html">Discussion</a>
 </li>
+<li>
+  <a href="p8105_final_report.html">Full report</a>
+</li>
+<li>
+  <a href="https://github.com/vp2587/p8105_final">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
 <div id="header">
-
-<div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
 
@@ -415,26 +414,6 @@ whether the patient was alive or dead at last follow-up. For survival
 analysis, we use date_of_surgery and date_of_last_visit to define
 follow-up time (in days) and combine this with patient_status to create
 a time-to-event and censoring indicator.</p>
-<div id="source-and-study-population." class="section level3">
-<h3>Source and study population.</h3>
-<p>This project uses a de-identified, publicly available breast cancer
-dataset obtained from Kaggle (<a
-href="https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code"
-class="uri">https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code</a>).
-The dataset includes 334 patients with primary breast cancer who
-underwent surgical treatment. For each patient, the file contains
-demographic information (age, gender), tumour characteristics (tumour
-stage, histology, ER/PR/HER2 receptor status), several protein
-biomarkers (Protein1–Protein4), treatment information (type of surgery),
-and follow-up data (date of surgery, date of last visit, and vital
-status).</p>
-<p>Before analysis, observations with missing <code>patient_id</code>
-were removed, as these corresponded to empty rows at the bottom of the
-file. For the survival analysis, we restricted to patients with
-non-missing dates of surgery and last follow-up, non-missing vital
-status, and non-negative follow-up time, resulting in 317 patients
-included in the Kaplan–Meier and log-rank analyses.</p>
-</div>
 <div id="data-import-and-cleaning" class="section level3">
 <h3>Data import and cleaning</h3>
 <div id="variables-1" class="section level4">
@@ -478,6 +457,32 @@ indicator.</p>
 </div>
 <div id="clean-data-types" class="section level4">
 <h4>Clean data types</h4>
+<p>Final cleaned dataset:</p>
+<pre class="r"><code>brca = brca_df_raw |&gt; 
+  mutate( #categorical variables
+    gender       = factor(gender),
+    tumour_stage = factor(tumour_stage,
+                          levels = c(&quot;I&quot;, &quot;II&quot;, &quot;III&quot;),
+                          ordered = TRUE),
+    histology    = factor(histology),
+    er_status    = factor(er_status),
+    pr_status    = factor(pr_status),
+    her2_status  = factor(her2_status),
+    surgery_type = factor(surgery_type),
+    patient_status = factor(patient_status,
+                            levels = c(&quot;Alive&quot;, &quot;Dead&quot;)),
+    #date variables
+    date_of_surgery     = as.Date(date_of_surgery, format = &quot;%d-%b-%y&quot;),
+    date_of_last_visit  = as.Date(date_of_last_visit, format = &quot;%d-%b-%y&quot;),
+
+    # survival
+    follow_up_time = as.numeric(date_of_last_visit - date_of_surgery),
+    event = case_when(
+      patient_status == &quot;Dead&quot;  ~ 1L,
+      patient_status == &quot;Alive&quot; ~ 0L,
+      TRUE                      ~ NA_integer_
+    )
+  )</code></pre>
 </div>
 </div>
 </div>
@@ -517,11 +522,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
-});
-</script>
 
 <script>
 $(document).ready(function ()  {

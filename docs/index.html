@@ -16,7 +16,7 @@
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -36,6 +36,8 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -329,10 +331,10 @@ div.tocify {
   <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="about.html">About Us</a>
+  <a href="data_processing.html">Data Processing</a>
 </li>
 <li>
-  <a href="data_processing.html">Data Processing</a>
+  <a href="EDA.html">Exploratory Data Analysis</a>
 </li>
 <li>
   <a href="multi_log_reg.html">Multiple Logisitic Regression</a>
@@ -345,6 +347,15 @@ div.tocify {
 </li>
 <li>
   <a href="discussion.html">Discussion</a>
+</li>
+<li>
+  <a href="p8105_final_report.html">Full report</a>
+</li>
+<li>
+  <a href="https://github.com/vp2587/p8105_final">
+    <span class="fa fa-github"></span>
+     
+  </a>
 </li>
       </ul>
     </div><!--/.nav-collapse -->
@@ -383,32 +394,73 @@ biomarkers in the BRCA dataset, assess whether biomarker levels differ
 across patient groups, build a regression model to predict survival
 status, and conduct basic survival analysis to explore factors
 associated with follow-up outcomes.</p>
+</div>
+<div id="about-the-project" class="section level3">
+<h3>About the Project</h3>
+<p>Our project, <em>Predicting Breast Cancer Outcomes from Clinical
+Features and Protein Biomarkers</em>, investigates how clinical
+variables and protein expression measurements are associated with breast
+cancer outcomes. We focus on building and evaluating statistical models
+that aim to capture patterns in the data and provide interpretable
+summaries of risk.</p>
+</div>
+<div id="about-the-dataset" class="section level3">
+<h3>About the Dataset</h3>
+<p>We use a publicly available breast cancer dataset that includes both
+clinical information (such as patient characteristics and tumour
+features) and quantitative protein expression measurements, along with
+follow-up on patient outcomes. After cleaning and preprocessing the
+data, we use it to explore associations, create visualizations, and fit
+predictive models, all of which are documented and reproducible through
+this website.</p>
+<p>All data cleaning, analysis, and plots shown on this site are
+reproducible and were created using our project code.</p>
+</div>
+<div id="screencast" class="section level3">
+<h3>Screencast</h3>
+<p><a href="https://youtu.be/nn9FXenmO2M">Watch our screencast on
+YouTube</a></p>
 <p style="text-align: center;">
-<img src="img/dataset-cover.jpg" alt="Breast cancer illustration" width="70%">
+<a href="https://youtu.be/nn9FXenmO2M" target="_blank">
+<img src="https://img.youtube.com/vi/nn9FXenmO2M/hqdefault.jpg"
+         alt="Screencast thumbnail"
+         style="max-width: 100%; border: 0;"> </a>
 </p>
 </div>
-<div id="data" class="section level3">
-<h3>2) Data</h3>
+<div id="who-we-are" class="section level3">
+<h3>Who We Are</h3>
+<p>We are a team of four students — <strong>Heather</strong>,
+<strong>Clement</strong>, <strong>Eric</strong>, and
+<strong>Veep</strong> — who worked together on this project. We come
+from different backgrounds but share an interest in data,
+problem-solving, and clear communication.</p>
+<div style="text-align: center;">
+<p><img src="img/heather.JPG" alt="Heather" style="width: 150px; border-radius: 50%;"><br />
+<strong>Heather</strong></p>
+<p>Linkedin: <a href="https://www.linkedin.com/in/heatherlu2001/"
+class="uri">https://www.linkedin.com/in/heatherlu2001/</a></p>
+<p>Github: <a href="https://github.com/heather-lu"
+class="uri">https://github.com/heather-lu</a></p>
+<p><img src="img/clement.jpg" alt="Clement" style="width: 150px; border-radius: 50%;"><br />
+<strong>Clement</strong></p>
+<p>Linkedin: <a href="https://www.linkedin.com/in/clement-li-881696a4/"
+class="uri">https://www.linkedin.com/in/clement-li-881696a4/</a></p>
+<p>Github: <a href="https://github.com/clementiaboo"
+class="uri">https://github.com/clementiaboo</a></p>
+<p><img src="img/eric.jpg" alt="Eric" style="width: 150px; border-radius: 50%;"><br />
+<strong>Eric</strong></p>
+<p>Linkedin: <a href="https://www.linkedin.com/in/eric-zhang-26a5aa221/"
+class="uri">https://www.linkedin.com/in/eric-zhang-26a5aa221/</a></p>
+<p>Github: <a href="https://github.com/xz3312"
+class="uri">https://github.com/xz3312</a></p>
+<p><img src="img/veep.jpg" alt="Veep" style="width: 150px; border-radius: 50%;"><br />
+<strong>Veep</strong></p>
+<p>Linkedin: <a href="https://www.linkedin.com/in/vpetchger/"
+class="uri">https://www.linkedin.com/in/vpetchger/</a></p>
+<p>Github: <a href="https://github.com/vp2587"
+class="uri">https://github.com/vp2587</a></p>
 </div>
-<div id="source-and-study-population" class="section level3">
-<h3>Source and study population</h3>
-<p>This project uses a de-identified, publicly available breast cancer
-dataset obtained from Kaggle (<a
-href="https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code"
-class="uri">https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code</a>).
-The dataset includes 334 patients with primary breast cancer who
-underwent surgical treatment. For each patient, the file contains
-demographic information (age, gender), tumour characteristics (tumour
-stage, histology, ER/PR/HER2 receptor status), several protein
-biomarkers (Protein1–Protein4), treatment information (type of surgery),
-and follow-up data (date of surgery, date of last visit, and vital
-status).</p>
-<p>Before analysis, observations with missing <code>patient_id</code>
-were removed, as these corresponded to empty rows at the bottom of the
-file. For the survival analysis, we restricted to patients with
-non-missing dates of surgery and last follow-up, non-missing vital
-status, and non-negative follow-up time, resulting in 317 patients
-included in the Kaplan–Meier and log-rank analyses.</p>
+<p>Thank you for visiting our project!</p>
 </div>
 
 

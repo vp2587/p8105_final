@@ -9,9 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Eric Zhang" />
 
-<meta name="date" content="2025-12-06" />
 
 <title>EDA</title>
 
@@ -31,9 +29,15 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -218,7 +222,73 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
 
 
 
@@ -228,6 +298,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -251,10 +331,10 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="about.html">About Us</a>
+  <a href="data_processing.html">Data Processing</a>
 </li>
 <li>
-  <a href="data_processing.html">Data Processing</a>
+  <a href="EDA.html">Exploratory Data Analysis</a>
 </li>
 <li>
   <a href="multi_log_reg.html">Multiple Logisitic Regression</a>
@@ -268,6 +348,15 @@ $(document).ready(function () {
 <li>
   <a href="discussion.html">Discussion</a>
 </li>
+<li>
+  <a href="p8105_final_report.html">Full report</a>
+</li>
+<li>
+  <a href="https://github.com/vp2587/p8105_final">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -275,11 +364,17 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">EDA</h1>
-<h4 class="author">Eric Zhang</h4>
-<h4 class="date">2025-12-06</h4>
 
 </div>
 
@@ -508,8 +603,8 @@ modeling and group comparisons.</p>
   geom_histogram(bins = 30, fill = &quot;steelblue&quot;, alpha = 0.7) +
   labs(title = &quot;Age Distribution of Breast Cancer Patients&quot;,
        x = &quot;Age&quot;, y = &quot;Count&quot;)</code></pre>
-<p><img src="EDA_files/figure-html/unnamed-chunk-5-1.png" width="672" />
-This histogram shows how patient age is distributed in the cohort. It
+<p><img src="EDA_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>This histogram shows how patient age is distributed in the cohort. It
 highlights the most common age range at diagnosis or surgery and allows
 us to see whether the sample is concentrated in midlife, older age, or
 spread more evenly across the adult lifespan.</p>
@@ -522,12 +617,12 @@ spread more evenly across the adult lifespan.</p>
   geom_density(fill=&quot;pink&quot;, alpha=0.4) +
   facet_wrap(~protein, scales=&quot;free&quot;) +
   labs(title = &quot;Distribution of Protein Biomarkers&quot;)</code></pre>
-<p><img src="EDA_files/figure-html/unnamed-chunk-6-1.png" width="672" />
-These density plots display the distribution of each of the four protein
-biomarkers across all patients. By looking at the shapes of the curves,
-we can see whether each biomarker is approximately symmetric or skewed,
-whether there are long tails, and whether any proteins appear to have
-multiple modes or outlying values.</p>
+<p><img src="EDA_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>These density plots display the distribution of each of the four
+protein biomarkers across all patients. By looking at the shapes of the
+curves, we can see whether each biomarker is approximately symmetric or
+skewed, whether there are long tails, and whether any proteins appear to
+have multiple modes or outlying values.</p>
 </div>
 </div>
 <div id="eda-3.-classification-visulization" class="section level2">
@@ -553,9 +648,9 @@ multiple modes or outlying values.</p>
   theme(plot.title = element_text(hjust = 0.5))
 
 carcinoma_type_pie</code></pre>
-<p><img src="EDA_files/figure-html/unnamed-chunk-7-1.png" width="672" />
-This pie chart summarizes the distribution of histologic tumour types in
-the dataset. The largest slice corresponds to infiltrating ductal
+<p><img src="EDA_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>This pie chart summarizes the distribution of histologic tumour types
+in the dataset. The largest slice corresponds to infiltrating ductal
 carcinoma, reflecting that most patients in this cohort have IDC, while
 infiltrating lobular carcinoma and mucinous carcinoma make up smaller
 proportions. This mirrors the expected pattern in clinical practice,
@@ -595,12 +690,12 @@ parts of the body.</p>
   theme(plot.title = element_text(hjust = 0.5))
 
 tumour_stage_pie</code></pre>
-<p><img src="EDA_files/figure-html/unnamed-chunk-8-1.png" width="672" />
-This pie chart shows how patients are distributed across tumour stages
-I, II, and III at the time of surgery. It allows us to see whether the
-dataset is dominated by early-stage disease, more advanced tumours, or a
-mix of both, which is important context when interpreting survival and
-biomarker patterns.</p>
+<p><img src="EDA_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>This pie chart shows how patients are distributed across tumour
+stages I, II, and III at the time of surgery. It allows us to see
+whether the dataset is dominated by early-stage disease, more advanced
+tumours, or a mix of both, which is important context when interpreting
+survival and biomarker patterns.</p>
 </div>
 <div id="general-patient-status-alive-or-dead" class="section level3">
 <h3>General Patient Status (alive or dead)</h3>
@@ -623,8 +718,8 @@ biomarker patterns.</p>
   theme(plot.title = element_text(hjust = 0.5))
 
 general_status_pie</code></pre>
-<p><img src="EDA_files/figure-html/unnamed-chunk-9-1.png" width="672" />
-This pie chart displays the overall proportion of patients who were
+<p><img src="EDA_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>This pie chart displays the overall proportion of patients who were
 alive versus dead at their last recorded visit. It provides a simple
 summary of outcomes in this cohort and indicates the baseline event rate
 that our predictive models will try to capture.</p>
@@ -653,14 +748,14 @@ class="section level3">
   )
 
 histology_status_plot</code></pre>
-<p><img src="EDA_files/figure-html/unnamed-chunk-10-1.png" width="672" />
-This stacked bar plot shows the proportion of patients who were alive or
-dead within each histologic tumour type. By comparing the height of the
-“dead” segment across histologies, we can see whether certain carcinoma
-types in this sample are associated with a higher proportion of deaths.
-In this dataset, mucinous carcinoma appears to have a slightly higher
-death proportion than the other histologic groups, although the absolute
-number of mucinous cases is relatively small.</p>
+<p><img src="EDA_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>This stacked bar plot shows the proportion of patients who were alive
+or dead within each histologic tumour type. By comparing the height of
+the “dead” segment across histologies, we can see whether certain
+carcinoma types in this sample are associated with a higher proportion
+of deaths. In this dataset, mucinous carcinoma appears to have a
+slightly higher death proportion than the other histologic groups,
+although the absolute number of mucinous cases is relatively small.</p>
 </div>
 <div id="patient-status-alive-or-dead-based-on-tumour-stage"
 class="section level3">
@@ -685,12 +780,12 @@ class="section level3">
   )
 
 tumour_stage_status_plot</code></pre>
-<p><img src="EDA_files/figure-html/unnamed-chunk-11-1.png" width="672" />
-This stacked bar plot displays the proportion of patients who were alive
-or dead within each tumour stage. The figure shows that the fraction of
-deaths increases from stage I to stage III, consistent with the clinical
-expectation that more advanced tumours are associated with worse
-outcomes. This pattern supports using tumour stage as an important
+<p><img src="EDA_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>This stacked bar plot displays the proportion of patients who were
+alive or dead within each tumour stage. The figure shows that the
+fraction of deaths increases from stage I to stage III, consistent with
+the clinical expectation that more advanced tumours are associated with
+worse outcomes. This pattern supports using tumour stage as an important
 predictor in subsequent survival and logistic regression analyses.</p>
 </div>
 </div>
@@ -745,8 +840,8 @@ class="section level3">
     plot.title = element_text(hjust = 0.5),
     legend.position = &quot;none&quot;
   )</code></pre>
-<p><img src="EDA_files/figure-html/unnamed-chunk-13-1.png" width="672" />
-This plot shows the distribution of protein levels across the three
+<p><img src="EDA_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>This plot shows the distribution of protein levels across the three
 histologic tumour types in the dataset: infiltrating ductal carcinoma,
 mucinous carcinoma, and infiltrating lobular carcinoma. By examining the
 boxplots for each protein within each histology group, we can explore
@@ -903,6 +998,8 @@ in our models, while remaining aware of potential collinearity.</p>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -934,7 +1031,41 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
