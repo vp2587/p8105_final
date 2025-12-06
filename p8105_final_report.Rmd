@@ -20,6 +20,8 @@ library(pROC)
 library(survival)
 library(dplyr)
 library(modelr)
+library(corrplot)
+library(car)
 ```
 
 # 1) Introduction / Motivation 
@@ -325,7 +327,87 @@ brca %>%
 ```
 This plot shows the distribution of protein levels across the three histologic tumour types in the dataset: infiltrating ductal carcinoma, mucinous carcinoma, and infiltrating lobular carcinoma. By examining the boxplots for each protein within each histology group, we can explore whether certain biomarker patterns are more characteristic of specific tumour types. This can reveal potential diagnostic or subtype-specific differences in protein expression.
 
-# 4) Multiple logistic regression: Predicting patient status
+## EDA 5. Exploratory Statistical Analyses
+
+### Summary of age by status and Two-sample t-test (Alive vs Dead)
+```{r}
+
+brca %>%
+group_by(patient_status) %>%
+summarise(
+mean_age = mean(age, na.rm = TRUE),
+sd_age   = sd(age, na.rm = TRUE),
+n        = n()
+)
+
+# Two-sample t-test (Alive vs Dead)
+
+age_status_ttest =
+t.test(age ~ patient_status, data = brca)
+
+age_status_ttest
+```
+We first compared age between patients who were alive and those who had died at last follow up. Mean age was 58.8 years among survivors and 59.2 years among those who died, with very similar standard deviations. A Welch two-sample t-test (t = −0.19, p = 0.85) showed no evidence of a difference in mean age between the two groups. Based on this, age does not appear to be a strong discriminator of survival status in this cohort, although we still consider it clinically important enough to include as a covariate in later models.
+
+### Contingency table: tumour stage x status
+```{r}
+stage_status_tab =
+brca %>%
+count(tumour_stage, patient_status) %>%
+tidyr::pivot_wider(
+names_from  = patient_status,
+values_from = n,
+values_fill = 0
+)
+
+stage_status_tab
+
+# Chi-square test of independence
+
+stage_status_chisq =
+chisq.test(as.matrix(stage_status_tab[ , -1]))
+stage_status_chisq
+
+```
+We next examined whether survival status was associated with tumour stage using a chi-square test of independence. Counts of alive and dead patients were similar across stages I, II, and III. The chi-square test (χ² = 1.09, df = 4, p = 0.90) provided no statistical evidence that the distribution of survival status differs by stage in this dataset. This suggests that, although more advanced disease is clinically expected to have worse outcomes, our sample does not show a strong stage–mortality association, possibly due to limited sample size or follow-up time. We still retain tumour stage as a key predictor in our logistic regression because of its clear clinical relevance.
+
+### Contingency table: histology x status
+```{r}
+histology_status_tab =
+brca %>%
+count(histology, patient_status) %>%
+tidyr::pivot_wider(
+names_from  = patient_status,
+values_from = n,
+values_fill = 0
+)
+
+histology_status_tab
+
+# Chi-square test of independence
+
+histology_status_chisq =
+chisq.test(as.matrix(histology_status_tab[ , -1]))
+histology_status_chisq
+```
+We also tested for an association between histologic tumour type and survival status. Infiltrating ductal carcinoma, infiltrating lobular carcinoma, and mucinous carcinoma all had broadly similar proportions of deaths. The chi-square test (χ² = 3.15, df = 4, p = 0.53) indicated no evidence that mortality differs across histology groups. This finding aligns with the stacked bar plot and suggests that histology alone is not a strong predictor of survival in this sample, although we still consider it as a descriptive variable and a potential adjustment factor in modeling.
+
+```{r}
+protein_cor =
+  brca %>% 
+  select(starts_with("protein")) %>% 
+  cor(use = "complete.obs")
+
+protein_cor
+
+corrplot(protein_cor, method = "color", tl.col = "black")
+```
+
+To assess how similar the four protein biomarkers are to one another, we computed a correlation matrix of Protein1–Protein4. This helps us understand whether the proteins provide largely redundant information or capture distinct aspects of tumour biology. The resulting correlations were generally (low/moderate/high — fill in after you look at the matrix), suggesting that while some proteins are related, no pair is perfectly correlated. This supports including multiple protein markers in our models, while remaining aware of potential collinearity.
+
+
+
+# 4) Multiple linear regression: Predicting patient status
 
 ### Model specification
 - Outcome: patient_status (Alive vs Dead).
@@ -517,8 +599,6 @@ The QQ-plots for each protein by tumour stage were reasonably linear, suggesting
 
 ##### Homogeneity of variances (Levene’s Test)
 ```{r}
-library(car)
-
 for (p in protein_vars) {
   print(p)
   print(leveneTest(brca[[p]] ~ brca$tumour_stage))
@@ -708,18 +788,10 @@ A log-rank test comparing the three stages gives a p-value of 0.10. This is larg
 
 Kaplan–Meier curves stratified by HER2 status (positive vs negative) are almost completely overlapping (Figure Z). The log-rank test yields a p-value of 0.97, indicating no evidence of a difference in survival between HER2-positive and HER2-negative patients in this sample. This result should be interpreted cautiously because the HER2-positive group is relatively small (29 patients vs 288 HER2-negative), so the comparison may have limited power to detect modest differences.
 
-# 7) Discussion (CLEMENT)
+# 7) Discussion 
 
-## Summary of main findings
-- Key predictors from logistic regression.
-- Whether biomarkers differ by stage/histology.
-- Survival differences between groups.
+Across this cohort of 334 surgically treated breast cancer patients, we found that basic clinical characteristics and the four available protein biomarkers carried only modest prognostic information for survival status at last follow-up. Descriptively, most patients were middle-aged or older, had infiltrating ductal carcinoma, and presented with stage I–II disease. Age did not differ meaningfully between patients who were alive versus dead at last contact, and contingency‐table analyses showed no statistically significant association between survival status and either tumour stage or histologic subtype, despite patterns that were directionally consistent with worse outcomes in higher stages.
 
-## Strengths and limitations
-- Small sample size (n = 334).
-- Observational dataset; limited clinical detail.
-- Missing data in follow-up and status.
+The protein biomarkers also showed limited differentiation across clinical groups. Mean expression levels of Protein1–Protein4 were similar by stage and by histology, and one-way ANOVA models (with assumptions reasonably satisfied) did not detect significant group differences after multiple-testing correction. Correlation analyses suggested that the four proteins were not perfectly redundant but also did not reveal any single marker with clearly distinct behaviour. In multivariable logistic regression, a model including age, tumour stage, surgery type, and all four proteins achieved only modest discrimination for death versus survival on cross-validation, indicating that this combination of clinical and biomarker information explains only part of the variability in outcomes.
 
-## Future directions
-- More advanced models (e.g., regularized logistic regression, Cox PH).
-- External validation on independent data.
+Time-to-event analyses told a similar story. The overall Kaplan–Meier curve showed relatively good long-term survival, with a gradual decline in survival probability over several years. Stratified curves by tumour stage displayed the expected ordering (stage III tending to have poorer survival than stages I and II), but the log-rank test did not provide strong statistical evidence for differences between stages in this dataset. Survival curves by HER2 status were almost completely overlapping, and the log-rank test again showed no evidence of separation. Taken together, these results suggest that, in this relatively small observational dataset, conventional clinical variables and this limited protein panel provide only weak additional prognostic information, underscoring the need for larger cohorts and richer molecular profiling to more precisely characterise factors that drive breast cancer outcomes.
