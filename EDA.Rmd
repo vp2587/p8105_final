@@ -1,8 +1,10 @@
 ---
 title: "EDA"
-author: "Eric Zhang"
-date: "2025-12-06"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
