@@ -14,6 +14,8 @@ navbar:
       href: multi_log_reg.html
     - text: "ANOVA"
       href: anova.html
+    - text: "Discussion"
+      href: discussion.html
 
 
 output:
