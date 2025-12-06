@@ -6,8 +6,6 @@ navbar:
   right:
     - text: "Home"
       href: index.html
-    - text: "About Us"
-      href: about.html
     - text: "Data Processing"
       href: data_processing.html
     - text: "Exploratory Data Analysis"
@@ -20,6 +18,8 @@ navbar:
       href: survival.html
     - text: "Discussion"
       href: discussion.html
+    - text: "Full report"
+      href: p8105_final_report.html
 
 output:
   html_document:

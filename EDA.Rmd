@@ -74,6 +74,7 @@ brca %>%
   select(age, gender, tumour_stage, histology, er_status, pr_status, her2_status, surgery_type, patient_status) |> 
   skimr::skim()
 ```
+
 This table summarizes the main clinical characteristics of the `r nrow(brca)` patients in the dataset, including age, gender, tumour stage, histology, hormone receptor status, HER2 status, surgery type, and vital status at last follow up. It gives basic statistics such as the mean and spread for age, as well as counts and percentages for each category, and provides an overall picture of who is represented in this breast cancer cohort.
 
 ### Protein Biomarker Summary
@@ -85,6 +86,7 @@ brca %>%
            na.rm = TRUE)
   )
 ```
+
 This table describes the four anonymized protein biomarkers in the dataset by reporting their mean, standard deviation, and observed range. These summaries help us see the typical expression level and variability of each protein across patients, which is useful context for later modeling and group comparisons.
 
 ## EDA 2. Distribution Visualization
@@ -97,6 +99,7 @@ brca %>%
   labs(title = "Age Distribution of Breast Cancer Patients",
        x = "Age", y = "Count")
 ```
+
 This histogram shows how patient age is distributed in the cohort. It highlights the most common age range at diagnosis or surgery and allows us to see whether the sample is concentrated in midlife, older age, or spread more evenly across the adult lifespan.
 
 ### Protein distribution
@@ -108,6 +111,7 @@ brca %>%
   facet_wrap(~protein, scales="free") +
   labs(title = "Distribution of Protein Biomarkers")
 ```
+
 These density plots display the distribution of each of the four protein biomarkers across all patients. By looking at the shapes of the curves, we can see whether each biomarker is approximately symmetric or skewed, whether there are long tails, and whether any proteins appear to have multiple modes or outlying values.
 
 ## EDA 3. Classification Visulization
@@ -134,6 +138,7 @@ carcinoma_type_pie =
 
 carcinoma_type_pie
 ```
+
 This pie chart summarizes the distribution of histologic tumour types in the dataset. The largest slice corresponds to infiltrating ductal carcinoma, reflecting that most patients in this cohort have IDC, while infiltrating lobular carcinoma and mucinous carcinoma make up smaller proportions. This mirrors the expected pattern in clinical practice, where IDC is the most common invasive breast cancer subtype.
 
 Infiltrating ductal carcinoma (IDC) is the most common breast cancer type. It begins in the milk ducts and grows into the surrounding breast tissue. As it progresses, IDC can spread through the lymphatic system or bloodstream to other parts of the body.
@@ -164,6 +169,7 @@ tumour_stage_pie =
 
 tumour_stage_pie
 ```
+
 This pie chart shows how patients are distributed across tumour stages I, II, and III at the time of surgery. It allows us to see whether the dataset is dominated by early-stage disease, more advanced tumours, or a mix of both, which is important context when interpreting survival and biomarker patterns.
 
 
@@ -189,6 +195,7 @@ general_status_pie =
 
 general_status_pie
 ```
+
 This pie chart displays the overall proportion of patients who were alive versus dead at their last recorded visit. It provides a simple summary of outcomes in this cohort and indicates the baseline event rate that our predictive models will try to capture.
 
 ### Patient status (alive or dead) based on tumour type
@@ -215,6 +222,7 @@ histology_status_plot =
 
 histology_status_plot
 ```
+
 This stacked bar plot shows the proportion of patients who were alive or dead within each histologic tumour type. By comparing the height of the “dead” segment across histologies, we can see whether certain carcinoma types in this sample are associated with a higher proportion of deaths. In this dataset, mucinous carcinoma appears to have a slightly higher death proportion than the other histologic groups, although the absolute number of mucinous cases is relatively small.
 
 ### Patient status (alive or dead) based on tumour stage
@@ -240,6 +248,7 @@ tumour_stage_status_plot =
 
 tumour_stage_status_plot
 ```
+
 This stacked bar plot displays the proportion of patients who were alive or dead within each tumour stage. The figure shows that the fraction of deaths increases from stage I to stage III, consistent with the clinical expectation that more advanced tumours are associated with worse outcomes. This pattern supports using tumour stage as an important predictor in subsequent survival and logistic regression analyses.
 
 
@@ -289,6 +298,7 @@ brca %>%
     legend.position = "none"
   )
 ```
+
 This plot shows the distribution of protein levels across the three histologic tumour types in the dataset: infiltrating ductal carcinoma, mucinous carcinoma, and infiltrating lobular carcinoma. By examining the boxplots for each protein within each histology group, we can explore whether certain biomarker patterns are more characteristic of specific tumour types. This can reveal potential diagnostic or subtype-specific differences in protein expression.
 
 ## EDA 5. Exploratory Statistical Analyses
@@ -311,6 +321,7 @@ t.test(age ~ patient_status, data = brca)
 
 age_status_ttest
 ```
+
 We first compared age between patients who were alive and those who had died at last follow up. Mean age was 58.8 years among survivors and 59.2 years among those who died, with very similar standard deviations. A Welch two-sample t-test (t = −0.19, p = 0.85) showed no evidence of a difference in mean age between the two groups. Based on this, age does not appear to be a strong discriminator of survival status in this cohort, although we still consider it clinically important enough to include as a covariate in later models.
 
 ### Contingency table: tumour stage x status
@@ -333,6 +344,7 @@ chisq.test(as.matrix(stage_status_tab[ , -1]))
 stage_status_chisq
 
 ```
+
 We next examined whether survival status was associated with tumour stage using a chi-square test of independence. Counts of alive and dead patients were similar across stages I, II, and III. The chi-square test (χ² = 1.09, df = 4, p = 0.90) provided no statistical evidence that the distribution of survival status differs by stage in this dataset. This suggests that, although more advanced disease is clinically expected to have worse outcomes, our sample does not show a strong stage–mortality association, possibly due to limited sample size or follow-up time. We still retain tumour stage as a key predictor in our logistic regression because of its clear clinical relevance.
 
 ### Contingency table: histology x status
@@ -354,6 +366,7 @@ histology_status_chisq =
 chisq.test(as.matrix(histology_status_tab[ , -1]))
 histology_status_chisq
 ```
+
 We also tested for an association between histologic tumour type and survival status. Infiltrating ductal carcinoma, infiltrating lobular carcinoma, and mucinous carcinoma all had broadly similar proportions of deaths. The chi-square test (χ² = 3.15, df = 4, p = 0.53) indicated no evidence that mortality differs across histology groups. This finding aligns with the stacked bar plot and suggests that histology alone is not a strong predictor of survival in this sample, although we still consider it as a descriptive variable and a potential adjustment factor in modeling.
 
 ```{r}
