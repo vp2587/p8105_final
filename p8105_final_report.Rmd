@@ -101,7 +101,7 @@ brca = brca_df_raw |>
 ## 3) Exploratory Data Analysis (EDA)
 
 
-## 1. Summary Tables
+## EDA 1. Summary Tables
 
 ### Patient Characteristics Summary
 
@@ -123,7 +123,7 @@ brca %>%
 ```
 This table describes the four anonymized protein biomarkers in the dataset by reporting their mean, standard deviation, and observed range. These summaries help us see the typical expression level and variability of each protein across patients, which is useful context for later modeling and group comparisons.
 
-## 2. Distribution Visualization
+## EDA 2. Distribution Visualization
 
 ### Age Distribution
 ```{r}
@@ -146,7 +146,7 @@ brca %>%
 ```
 These density plots display the distribution of each of the four protein biomarkers across all patients. By looking at the shapes of the curves, we can see whether each biomarker is approximately symmetric or skewed, whether there are long tails, and whether any proteins appear to have multiple modes or outlying values.
 
-## 3. Classification Visulization
+## EDA 3. Classification Visulization
 
 ### Carcinoma Type Classification
 ```{r}
@@ -279,7 +279,7 @@ tumour_stage_status_plot
 This stacked bar plot displays the proportion of patients who were alive or dead within each tumour stage. The figure shows that the fraction of deaths increases from stage I to stage III, consistent with the clinical expectation that more advanced tumours are associated with worse outcomes. This pattern supports using tumour stage as an important predictor in subsequent survival and logistic regression analyses.
 
 
-## 4. Stratified Summaries
+## EDA 4. Stratified Summaries
 
 ### Protein levels by tumour stage
 ```{r}
