@@ -8,6 +8,8 @@ navbar:
       href: index.html
     - text: "About Us"
       href: about.html
+    - text: "Multiple Logisitic Regression"
+      href: multi_log_reg.html
     - text: "Data Processing"
       href: data_processing.html
 
