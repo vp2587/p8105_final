@@ -99,7 +99,7 @@ brca = brca_df_raw |>
 ## 3) Exploratory Data Analysis (EDA)
 
 
-## EDA 1. Summary Tables
+## 1. Summary Tables
 
 ### Patient Characteristics Summary
 
@@ -121,7 +121,7 @@ brca %>%
 ```
 This table describes the four anonymized protein biomarkers in the dataset by reporting their mean, standard deviation, and observed range. These summaries help us see the typical expression level and variability of each protein across patients, which is useful context for later modeling and group comparisons.
 
-## EDA 2. Distribution Visualization
+## 2. Distribution Visualization
 
 ### Age Distribution
 ```{r}
@@ -144,7 +144,7 @@ brca %>%
 ```
 These density plots display the distribution of each of the four protein biomarkers across all patients. By looking at the shapes of the curves, we can see whether each biomarker is approximately symmetric or skewed, whether there are long tails, and whether any proteins appear to have multiple modes or outlying values.
 
-## EDA 3. Classification Visulization
+## 3. Classification Visulization
 
 ### Carcinoma Type Classification
 ```{r}
@@ -277,7 +277,7 @@ tumour_stage_status_plot
 This stacked bar plot displays the proportion of patients who were alive or dead within each tumour stage. The figure shows that the fraction of deaths increases from stage I to stage III, consistent with the clinical expectation that more advanced tumours are associated with worse outcomes. This pattern supports using tumour stage as an important predictor in subsequent survival and logistic regression analyses.
 
 
-## EDA 4. Stratified Summaries
+## 4. Stratified Summaries
 
 ### Protein levels by tumour stage
 ```{r}
@@ -325,94 +325,11 @@ brca %>%
 ```
 This plot shows the distribution of protein levels across the three histologic tumour types in the dataset: infiltrating ductal carcinoma, mucinous carcinoma, and infiltrating lobular carcinoma. By examining the boxplots for each protein within each histology group, we can explore whether certain biomarker patterns are more characteristic of specific tumour types. This can reveal potential diagnostic or subtype-specific differences in protein expression.
 
-
-## EDA 5. Exploratory Statistical Analyses
-
-### Summary of age by status and Two-sample t-test (Alive vs Dead)
-```{r}
-
-brca %>%
-group_by(patient_status) %>%
-summarise(
-mean_age = mean(age, na.rm = TRUE),
-sd_age   = sd(age, na.rm = TRUE),
-n        = n()
-)
-
-# Two-sample t-test (Alive vs Dead)
-
-age_status_ttest =
-t.test(age ~ patient_status, data = brca)
-
-age_status_ttest
-```
-We first compared age between patients who were alive and those who had died at last follow up. Mean age was 58.8 years among survivors and 59.2 years among those who died, with very similar standard deviations. A Welch two-sample t-test (t = −0.19, p = 0.85) showed no evidence of a difference in mean age between the two groups. Based on this, age does not appear to be a strong discriminator of survival status in this cohort, although we still consider it clinically important enough to include as a covariate in later models.
-
-### Contingency table: tumour stage x status
-```{r}
-stage_status_tab =
-brca %>%
-count(tumour_stage, patient_status) %>%
-tidyr::pivot_wider(
-names_from  = patient_status,
-values_from = n,
-values_fill = 0
-)
-
-stage_status_tab
-
-# Chi-square test of independence
-
-stage_status_chisq =
-chisq.test(as.matrix(stage_status_tab[ , -1]))
-stage_status_chisq
-
-```
-We next examined whether survival status was associated with tumour stage using a chi-square test of independence. Counts of alive and dead patients were similar across stages I, II, and III. The chi-square test (χ² = 1.09, df = 4, p = 0.90) provided no statistical evidence that the distribution of survival status differs by stage in this dataset. This suggests that, although more advanced disease is clinically expected to have worse outcomes, our sample does not show a strong stage–mortality association, possibly due to limited sample size or follow-up time. We still retain tumour stage as a key predictor in our logistic regression because of its clear clinical relevance.
-
-### Contingency table: histology x status
-```{r}
-histology_status_tab =
-brca %>%
-count(histology, patient_status) %>%
-tidyr::pivot_wider(
-names_from  = patient_status,
-values_from = n,
-values_fill = 0
-)
-
-histology_status_tab
-
-# Chi-square test of independence
-
-histology_status_chisq =
-chisq.test(as.matrix(histology_status_tab[ , -1]))
-histology_status_chisq
-```
-We also tested for an association between histologic tumour type and survival status. Infiltrating ductal carcinoma, infiltrating lobular carcinoma, and mucinous carcinoma all had broadly similar proportions of deaths. The chi-square test (χ² = 3.15, df = 4, p = 0.53) indicated no evidence that mortality differs across histology groups. This finding aligns with the stacked bar plot and suggests that histology alone is not a strong predictor of survival in this sample, although we still consider it as a descriptive variable and a potential adjustment factor in modeling.
-
-```{r}
-library(corrplot)
-
-protein_cor =
-  brca %>% 
-  select(starts_with("protein")) %>% 
-  cor(use = "complete.obs")
-
-protein_cor
-
-corrplot(protein_cor, method = "color", tl.col = "black")
-```
-
-To assess how similar the four protein biomarkers are to one another, we computed a correlation matrix of Protein1–Protein4. This helps us understand whether the proteins provide largely redundant information or capture distinct aspects of tumour biology. The resulting correlations were generally (low/moderate/high — fill in after you look at the matrix), suggesting that while some proteins are related, no pair is perfectly correlated. This supports including multiple protein markers in our models, while remaining aware of potential collinearity.
-
-
-
-# 4) Multiple linear regression: Predicting patient status
+# 4) Multiple logistic regression: Predicting patient status
 
 ### Model specification
 - Outcome: patient_status (Alive vs Dead).
-- Predictors: age, tumour_stage, surgery_type, ER/PR/HER2, selected proteins.
+- Predictors: age, tumour_stage, surgery_type, selected proteins.
 - Brief rationale for selected predictors (based on EDA).
 
 ### Model fitting
@@ -430,28 +347,34 @@ brca_mlr =
       family = binomial(link = "logit")
   )
 ```
+We fit a multiple logistic regression to predict mortality using clinical predictors such as `age`, `tumour_stage`, `surgery_type`, and the protein biomarkers (`protein1`-`protein4`). These predictors were selected based on exploratory analyses showing differences in survival outcomes across different groups. 
 
 ### Model results
 ```{r}
 brca_mlr %>% 
   broom::tidy(exponentiate = TRUE, conf.int = TRUE)
 ```
+Model coefficient estimates were expressed as odds ratios. At the 0.05 level, none of the predictors were statistically significant, though the proteins generally expressed a weak positive association with mortality. Tumor stage showed a slight increase in odds of death, but the confidence intervals were wide. Overall, the clinical and protein predictors demonstrated a weak association with patient status.
 
 ### Model performance (ROC, AUC)
 ```{r}
 roc_brca =
   brca %>% 
   mutate(pred_prob = predict(brca_mlr, newdata = ., type = "response")) %>% 
-  roc(target, pred_prob) %>% 
+  roc(target, pred_prob) 
+
+roc_brca %>% 
   ggroc() +
   labs(
     title = "ROC Curve for MLR Model",
     x = "False Positive Rate",
-    y = "False Negative Rate"
+    y = "True Negative Rate"
   ) +
   theme_minimal()
-roc_brca
+
+auc(roc_brca)
 ```
+The ROC curve suggests that the model was poor at distinguishing between patients who survived and passed away, with an AUC of `r round(auc(roc_brca), 3)`.
 
 ### Cross-validation
 ```{r}
@@ -485,12 +408,14 @@ cv_df =
     )
   )
 
-cv_df %>% 
+cv_summary =
+  cv_df %>% 
   summarize(
     mean_auc = mean(auc),
     sd_auc   = sd(auc)
   )
 ```
+To assess generalizability, we performed a 5-fold cross-validation. The average cross-validated AUC was `r round(cv_summary$mean_auc, 3)` with a standard deviation of `r round(cv_summary$sd_auc, 3)`. These values suggest that this model was minimally better than randomly predicting patient status.
 
 # 5) ANOVA: Protein biomarkers across clinical groups
 ```{r}
