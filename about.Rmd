@@ -1,0 +1,57 @@
+---
+title: "About"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+---
+
+<img src="img/banner.jpg" alt="Breast cancer research" style="width:100%; max-height:350px; object-fit:cover;">
+
+## Who We Are
+
+We are a team of four students — **Heather**, **Clement**, **Eric**, and **Veep** — who worked together on this project. We come from different backgrounds but share an interest in data, problem-solving, and clear communication.
+
+<div style="text-align: center;">
+
+<img src="img/heather.jpg" alt="Heather" style="width: 150px; border-radius: 50%;">  
+**Heather**
+
+Linkedin: https://www.linkedin.com/in/heatherlu2001/
+
+Github: https://github.com/heather-lu
+
+<img src="img/clement.jpg" alt="Clement" style="width: 150px; border-radius: 50%;">  
+**Clement**
+
+Linkedin: https://www.linkedin.com/in/clement-li-881696a4/
+
+Github: https://github.com/clementiaboo
+
+<img src="img/eric.jpg" alt="Eric" style="width: 150px; border-radius: 50%;">  
+**Eric**
+
+Linkedin: https://www.linkedin.com/in/eric-zhang-26a5aa221/
+
+Github: https://github.com/xz3312
+
+<img src="img/veep.jpg" alt="Veep" style="width: 150px; border-radius: 50%;">  
+**Veep**
+
+Linkedin: https://www.linkedin.com/in/vpetchger/
+
+Github: https://github.com/vp2587
+
+</div>
+
+## About the Project
+
+Our project, *Predicting Breast Cancer Outcomes from Clinical Features and Protein Biomarkers*, investigates how clinical variables and protein expression measurements are associated with breast cancer outcomes. We focus on building and evaluating statistical models that aim to capture patterns in the data and provide interpretable summaries of risk.
+
+## About the Dataset
+We use a publicly available breast cancer dataset that includes both clinical information (such as patient characteristics and tumour features) and quantitative protein expression measurements, along with follow-up on patient outcomes. After cleaning and preprocessing the data, we use it to explore associations, create visualizations, and fit predictive models, all of which are documented and reproducible through this website.
+
+All data cleaning, analysis, and plots shown on this site are reproducible and were created using our project code.
+
+Thanks for visiting our project!

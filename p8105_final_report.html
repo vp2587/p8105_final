@@ -1049,9 +1049,7 @@ aligns with the stacked bar plot and suggests that histology alone is
 not a strong predictor of survival in this sample, although we still
 consider it as a descriptive variable and a potential adjustment factor
 in modeling.</p>
-<pre class="r"><code>library(corrplot)
-
-protein_cor =
+<pre class="r"><code>protein_cor =
   brca %&gt;% 
   select(starts_with(&quot;protein&quot;)) %&gt;% 
   cor(use = &quot;complete.obs&quot;)
@@ -1332,9 +1330,7 @@ models.</p>
 </div>
 <div id="homogeneity-of-variances-levenes-test" class="section level5">
 <h5>Homogeneity of variances (Levene’s Test)</h5>
-<pre class="r"><code>library(car)
-
-for (p in protein_vars) {
+<pre class="r"><code>for (p in protein_vars) {
   print(p)
   print(leveneTest(brca[[p]] ~ brca$tumour_stage))
 }</code></pre>
