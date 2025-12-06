@@ -19,6 +19,7 @@ library(survminer)
 library(pROC)        
 library(survival)
 library(dplyr)
+library(modelr)
 ```
 
 # 1) Introduction / Motivation (CLEMENT)
@@ -371,12 +372,63 @@ brca_mlr =
 
 ### Model results
 ```{r}
-
+brca_mlr %>% 
+  broom::tidy(exponentiate = TRUE, conf.int = TRUE)
 ```
 
 ### Model performance (ROC, AUC)
 ```{r}
+roc_brca =
+  brca %>% 
+  mutate(pred_prob = predict(brca_mlr, newdata = ., type = "response")) %>% 
+  roc(target, pred_prob) %>% 
+  ggroc() +
+  labs(
+    title = "ROC Curve for MLR Model",
+    x = "False Positive Rate",
+    y = "False Negative Rate"
+  ) +
+  theme_minimal()
+roc_brca
+```
 
+### Cross-validation
+```{r}
+set.seed(123)
+
+cv_df = 
+  crossv_mc(brca, 5) %>% 
+  mutate(
+    train = map(train, as_tibble),
+    test  = map(test,  as_tibble)
+  ) %>% 
+  mutate(
+    mlr_mod = map(
+      .x = train,
+      ~ glm(
+          target ~ age + tumour_stage + surgery_type +
+            protein1 + protein2 + protein3 + protein4,
+          data   = .x,
+          family = binomial(link = "logit")
+        )
+    ),
+    pred_prob = map2(
+      .x = mlr_mod,
+      .y = test,
+      ~ predict(.x, newdata = .y, type = "response")
+    ),
+    auc = map2_dbl(
+      .x = pred_prob,
+      .y = test,
+      ~ pROC::auc(pROC::roc(.y$target, .x))
+    )
+  )
+
+cv_df %>% 
+  summarize(
+    mean_auc = mean(auc),
+    sd_auc   = sd(auc)
+  )
 ```
 
 # 5) ANOVA: Protein biomarkers across clinical groups (CLEMENT)
