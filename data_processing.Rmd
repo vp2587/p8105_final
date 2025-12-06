@@ -97,7 +97,7 @@ Before analysis, observations with missing `patient_id` were removed, as these c
 
 ### Data import and cleaning
 
-```{r}
+```{r, include=FALSE}
 brca_df_raw = read_csv("BRCA.csv") |> 
   janitor::clean_names() |> 
   filter(!is.na(patient_id)) #remove empty rows at the bottom
@@ -129,7 +129,7 @@ The primary outcome for this project is **patient_status**, indicating whether t
 
 #### Clean data types
 
-```{r}
+```{r, include=FALSE}
 brca = brca_df_raw |> 
   mutate( #categorical variables
     gender       = factor(gender),
