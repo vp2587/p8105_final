@@ -7,6 +7,10 @@ output:
     toc_float: true
 ---
 
+<p style="text-align: center;">
+  <img src="img/Ink-Blog-Post-Featured-Image.jpg" alt="Breast cancer illustration" width="70%">
+</p>
+
 ### 1) Introduction / Motivation 
 
 Breast cancer is a major global health burden and a leading cause of cancer-related death among women. While clinical characteristics such as tumour stage and histology inform prognosis, molecular biomarkers may offer additional insight into disease progression and survival. In this project, we describe patterns of clinical features and protein biomarkers in the BRCA dataset, assess whether biomarker levels differ across patient groups, build a regression model to predict survival status, and conduct basic survival analysis to explore factors associated with follow-up outcomes.

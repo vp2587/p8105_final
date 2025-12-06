@@ -4,7 +4,6 @@ output:
   html_document:
     toc: true
     toc_float: true
-    theme: darkly
 ---
 
 <img src="img/banner.jpg" alt="Breast cancer research" style="width:100%; max-height:350px; object-fit:cover;">
