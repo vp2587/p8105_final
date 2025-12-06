@@ -322,23 +322,7 @@ brca %>%
 This plot shows the distribution of protein levels across the three histologic tumour types in the dataset: infiltrating ductal carcinoma, mucinous carcinoma, and infiltrating lobular carcinoma. By examining the boxplots for each protein within each histology group, we can explore whether certain biomarker patterns are more characteristic of specific tumour types. This can reveal potential diagnostic or subtype-specific differences in protein expression.
 
 
-### Overall summaries
-- Age: mean, SD, range.
-- Tumour stage and histology: counts/percent.
-- ER/PR/HER2 status: counts/percent.
-- Surgery types: counts/percent.
-- Protein biomarkers: mean, SD, distribution shape.
-
-### Distributions
-
-#### Age and proteins
-- Histograms / density plots.
-- Boxplots of proteins.
-
-#### Stratified summaries
-- Protein levels by tumour stage.
-- Protein levels by histology.
-- Crosstabs of receptor status and tumour stage.
+## 5. Exploratory Statistical Analyses
 
 ```{r}
 
