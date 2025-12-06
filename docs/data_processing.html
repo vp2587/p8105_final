@@ -334,6 +334,12 @@ div.tocify {
 <li>
   <a href="data_processing.html">Data Processing</a>
 </li>
+<li>
+  <a href="multi_log_reg.html">Multiple Logisitic Regression</a>
+</li>
+<li>
+  <a href="anova.html">ANOVA</a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -362,24 +368,8 @@ message = FALSE,
 warning = FALSE
 )
 
-library(tidyverse)</code></pre>
-<pre><code>## ── Attaching core tidyverse packages ───────────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
-## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-## ✔ purrr     1.1.0     
-## ── Conflicts ─────────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()
-## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>library(janitor)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;janitor&#39;
-## 
-## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     chisq.test, fisher.test</code></pre>
+library(tidyverse)
+library(janitor)</code></pre>
 <div id="source-and-study-population" class="section level1">
 <h1>Source and study population</h1>
 <p>This project uses a de-identified, publicly available breast cancer
