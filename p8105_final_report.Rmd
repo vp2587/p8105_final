@@ -23,7 +23,7 @@ library(dplyr)
 
 # 1) Introduction / Motivation (CLEMENT)
 
-Breast cancer is a major global health burden and a leading cause of cancer-related death among women. While clinical characteristics such as tumor stage and histology inform prognosis, molecular biomarkers may offer additional insight into disease progression and survival. In this project, we describe patterns of clinical features and protein biomarkers in the BRCA dataset, assess whether biomarker levels differ across patient groups, build a logistic regression model to predict survival status, and conduct basic survival analysis to explore factors associated with follow-up outcomes.
+Breast cancer is a major global health burden and a leading cause of cancer-related death among women. While clinical characteristics such as tumour stage and histology inform prognosis, molecular biomarkers may offer additional insight into disease progression and survival. In this project, we describe patterns of clinical features and protein biomarkers in the BRCA dataset, assess whether biomarker levels differ across patient groups, build a logistic regression model to predict survival status, and conduct basic survival analysis to explore factors associated with follow-up outcomes.
 
 # 2) Data
 
@@ -169,11 +169,11 @@ This pie chart summarizes the distribution of histologic tumour types in the dat
 
 Infiltrating ductal carcinoma (IDC) is the most common breast cancer type. It begins in the milk ducts and grows into the surrounding breast tissue. As it progresses, IDC can spread through the lymphatic system or bloodstream to other parts of the body.
 
-Mucinous carcinoma is a breast cancer subtype in which tumor cells grow within mucin, the main component of mucus. Mucin normally supports healthy cell function, but in this tumor type, the mucin produced by cancer cells becomes part of the mass. Although mucinous tumors can occur elsewhere in the body, they most often appear in the breast.
+Mucinous carcinoma is a breast cancer subtype in which tumour cells grow within mucin, the main component of mucus. Mucin normally supports healthy cell function, but in this tumour type, the mucin produced by cancer cells becomes part of the mass. Although mucinous tumours can occur elsewhere in the body, they most often appear in the breast.
 
 Infiltrating lobular carcinoma (ILC) starts in the lobules, the glands that produce milk. Because it is an invasive cancer, it extends beyond the lobule into nearby tissue, and over time can spread to other parts of the body.
 
-### Tumor Stage Classification
+### tumour Stage Classification
 ```{r}
 tumour_stage_pie =
   brca %>% 
@@ -222,7 +222,7 @@ general_status_pie
 ```
 This pie chart displays the overall proportion of patients who were alive versus dead at their last recorded visit. It provides a simple summary of outcomes in this cohort and indicates the baseline event rate that our predictive models will try to capture.
 
-### Patient status (alive or dead) based on tumor type
+### Patient status (alive or dead) based on tumour type
 ```{r}
 histology_status_plot =
   brca %>% 
@@ -233,7 +233,7 @@ histology_status_plot =
   geom_col(position = "fill", color = "white") +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   labs(
-    title = "Patient Status by Tumor Type (Histology)",
+    title = "Patient Status by tumour Type (Histology)",
     x = "Histology",
     y = "Proportion within Histology",
     fill = "Patient status"
@@ -248,7 +248,7 @@ histology_status_plot
 ```
 This stacked bar plot shows the proportion of patients who were alive or dead within each histologic tumour type. By comparing the height of the “dead” segment across histologies, we can see whether certain carcinoma types in this sample are associated with a higher proportion of deaths. In this dataset, mucinous carcinoma appears to have a slightly higher death proportion than the other histologic groups, although the absolute number of mucinous cases is relatively small.
 
-### Patient status (alive or dead) based on tumor stage
+### Patient status (alive or dead) based on tumour stage
 ```{r}
 tumour_stage_status_plot =
   brca %>% 
@@ -276,7 +276,7 @@ This stacked bar plot displays the proportion of patients who were alive or dead
 
 ## 4. Stratified Summaries
 
-### Protein levels by tumor stage
+### Protein levels by tumour stage
 ```{r}
 brca %>% 
   pivot_longer(starts_with("protein"),
@@ -296,9 +296,9 @@ brca %>%
     legend.position = "none"
   )
 ```
-This plot compares the distribution of each protein biomarker across tumour stages I, II, and III. Each protein is shown in a separate panel to make the differences easier to see. The boxplots highlight how biomarker levels change with increasing stage, allowing us to visually assess whether later-stage tumors tend to have higher or lower protein expression. This helps identify proteins that may be associated with disease progression.
+This plot compares the distribution of each protein biomarker across tumour stages I, II, and III. Each protein is shown in a separate panel to make the differences easier to see. The boxplots highlight how biomarker levels change with increasing stage, allowing us to visually assess whether later-stage tumours tend to have higher or lower protein expression. This helps identify proteins that may be associated with disease progression.
 
-### Protein levels by tumor type (histology)
+### Protein levels by tumour type (histology)
 ```{r}
 brca %>% 
   pivot_longer(starts_with("protein"),
@@ -308,7 +308,7 @@ brca %>%
   geom_boxplot(alpha = 0.8) +
   facet_wrap(~ protein, scales = "free_y") +
   labs(
-    title = "Protein Levels by Tumor Type (Histology)",
+    title = "Protein Levels by tumour Type (Histology)",
     x = "Histology",
     y = "Protein Level"
   ) +
@@ -520,8 +520,8 @@ ggplot(brca_long_stage, aes(x = tumour_stage, y = value, fill = tumour_stage)) +
 
 ```
 
-Protein1 expression showed very similar distributions across tumour stages I, II, and III. Median levels were close to zero in all three groups, and the interquartile ranges largely overlapped. Although a few outliers were present in each stage, the overall spread of values was comparable, suggesting no meaningful differences in Protein1 expression by tumor stage in this dataset. 
-This interpretation perfectly matches our ANOVA result where p = 0.50 (not significant) and Levene’s test where p = 0.18 (equal variances). Similar patterns were observed for protein2–protein4, with substantial overlap in distributions across tumor stages.
+Protein1 expression showed very similar distributions across tumour stages I, II, and III. Median levels were close to zero in all three groups, and the interquartile ranges largely overlapped. Although a few outliers were present in each stage, the overall spread of values was comparable, suggesting no meaningful differences in Protein1 expression by tumour stage in this dataset. 
+This interpretation perfectly matches our ANOVA result where p = 0.50 (not significant) and Levene’s test where p = 0.18 (equal variances). Similar patterns were observed for protein2–protein4, with substantial overlap in distributions across tumour stages.
 
 ##### Boxplot - Protein by Histology
 ```{r}
