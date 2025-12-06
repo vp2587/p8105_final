@@ -22,16 +22,16 @@ library(dplyr)
 library(modelr)
 ```
 
-# 1) Introduction / Motivation (CLEMENT)
+# 1) Introduction / Motivation 
 
-Breast cancer is a major global health burden and a leading cause of cancer-related death among women. While clinical characteristics such as tumour stage and histology inform prognosis, molecular biomarkers may offer additional insight into disease progression and survival. In this project, we describe patterns of clinical features and protein biomarkers in the BRCA dataset, assess whether biomarker levels differ across patient groups, build a logistic model to predict survival status, and conduct basic survival analysis to explore factors associated with follow-up outcomes.
+Breast cancer is a major global health burden and a leading cause of cancer-related death among women. While clinical characteristics such as tumour stage and histology inform prognosis, molecular biomarkers may offer additional insight into disease progression and survival. In this project, we describe patterns of clinical features and protein biomarkers in the BRCA dataset, assess whether biomarker levels differ across patient groups, build a regression model to predict survival status, and conduct basic survival analysis to explore factors associated with follow-up outcomes.
 
 # 2) Data
 
-### Source and study population
+### Source and study population.
 This project uses a de-identified, publicly available breast cancer dataset obtained from Kaggle (https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code). The dataset includes 334 patients with primary breast cancer who underwent surgical treatment. For each patient, the file contains demographic information (age, gender), tumour characteristics (tumour stage, histology, ER/PR/HER2 receptor status), several protein biomarkers (Protein1–Protein4), treatment information (type of surgery), and follow-up data (date of surgery, date of last visit, and vital status).
 
-Before analysis, observations with missing `patient_id` were removed, as these corresponded to empty rows at the bottom of the file. For the survival analysis, we  restricted to patients with non-missing dates of surgery and last follow-up, non-missing vital status, and non-negative follow-up time, resulting in 317 patients included in the Kaplan–Meier and log-rank analyses.
+Before analysis, observations with missing `patient_id` were removed, as these corresponded to empty rows at the bottom of the file. For the survival analysis, we restricted to patients with non-missing dates of surgery and last follow-up, non-missing vital status, and non-negative follow-up time, resulting in 317 patients included in the Kaplan–Meier and log-rank analyses.
 
 ### Data import and cleaning
 
@@ -58,6 +58,7 @@ After `clean_names()`, your key columns are:
 
 Time variables 
 
+- Clarify outcome: patient status (Alive/Dead).
 - `date_of_surgery`: Calendar date of the primary breast cancer surgery.
 - `date_of_last_visit`: Date of last recorded follow-up visit.
 - `patient_status`: Vital status at last follow-up (`Alive` or `Dead`).
@@ -107,7 +108,7 @@ brca %>%
   select(age, gender, tumour_stage, histology, er_status, pr_status, her2_status, surgery_type, patient_status) |> 
   skimr::skim()
 ```
-This table summarizes the main clinical characteristics of the r nrow(brca) patients in the dataset, including age, gender, tumour stage, histology, hormone receptor status, HER2 status, surgery type, and vital status at last follow up. It gives basic statistics such as the mean and spread for age, as well as counts and percentages for each category, and provides an overall picture of who is represented in this breast cancer cohort.
+This table summarizes the main clinical characteristics of the `r nrow(brca)` patients in the dataset, including age, gender, tumour stage, histology, hormone receptor status, HER2 status, surgery type, and vital status at last follow up. It gives basic statistics such as the mean and spread for age, as well as counts and percentages for each category, and provides an overall picture of who is represented in this breast cancer cohort.
 
 ### Protein Biomarker Summary
 ```{r}
@@ -298,6 +299,7 @@ brca %>%
     legend.position = "none"
   )
 ```
+
 This plot compares the distribution of each protein biomarker across tumour stages I, II, and III. Each protein is shown in a separate panel to make the differences easier to see. The boxplots highlight how biomarker levels change with increasing stage, allowing us to visually assess whether later-stage tumours tend to have higher or lower protein expression. This helps identify proteins that may be associated with disease progression.
 
 ### Protein levels by tumour type (histology)
@@ -322,30 +324,6 @@ brca %>%
   )
 ```
 This plot shows the distribution of protein levels across the three histologic tumour types in the dataset: infiltrating ductal carcinoma, mucinous carcinoma, and infiltrating lobular carcinoma. By examining the boxplots for each protein within each histology group, we can explore whether certain biomarker patterns are more characteristic of specific tumour types. This can reveal potential diagnostic or subtype-specific differences in protein expression.
-
-
-### Overall summaries
-- Age: mean, SD, range.
-- Tumour stage and histology: counts/percent.
-- ER/PR/HER2 status: counts/percent.
-- Surgery types: counts/percent.
-- Protein biomarkers: mean, SD, distribution shape.
-
-### Distributions
-
-#### Age and proteins
-- Histograms / density plots.
-- Boxplots of proteins.
-
-#### Stratified summaries
-- Protein levels by tumour stage.
-- Protein levels by histology.
-- Crosstabs of receptor status and tumour stage.
-
-```{r}
-
-```
-
 
 # 4) Multiple linear regression: Predicting patient status
 
@@ -431,7 +409,7 @@ cv_df %>%
   )
 ```
 
-# 5) ANOVA: Protein biomarkers across clinical groups (CLEMENT)
+# 5) ANOVA: Protein biomarkers across clinical groups
 ```{r}
 # identify protein biomarker columns (protein1–protein4)
 protein_vars <- names(brca)[grepl("^protein", names(brca))]
@@ -543,10 +521,6 @@ Levene’s tests indicated no significant variance differences across tumour sta
 
 ##### Boxplot — Proteins by Tumour Stage
 ```{r}
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-
 # Identify proteins
 protein_vars <- names(brca)[grepl("^protein", names(brca))]
 
@@ -581,6 +555,8 @@ ggplot(brca_long_stage, aes(x = tumour_stage, y = value, fill = tumour_stage)) +
 
 ```
 
+Protein1 expression showed very similar distributions across tumour stages I, II, and III. Median levels were close to zero in all three groups, and the interquartile ranges largely overlapped. Although a few outliers were present in each stage, the overall spread of values was comparable, suggesting no meaningful differences in Protein1 expression by tumor stage in this dataset. 
+This interpretation perfectly matches our ANOVA result where p = 0.50 (not significant) and Levene’s test where p = 0.18 (equal variances). Similar patterns were observed for protein2–protein4, with substantial overlap in distributions across tumor stages.
 Protein1 expression showed very similar distributions across tumour stages I, II, and III. Median levels were close to zero in all three groups, and the interquartile ranges largely overlapped. Although a few outliers were present in each stage, the overall spread of values was comparable, suggesting no meaningful differences in Protein1 expression by tumour stage in this dataset. 
 This interpretation perfectly matches our ANOVA result where p = 0.50 (not significant) and Levene’s test where p = 0.18 (equal variances). Similar patterns were observed for protein2–protein4, with substantial overlap in distributions across tumour stages.
 
@@ -630,7 +606,7 @@ Final Conclusion: Overall, there was no evidence that protein biomarker expressi
 
 ### Time-to-event definition
 - Follow-up time = Date_of_Last_Visit – Date_of_Surgery.
-- Event indicator = 1 if Dead, 0 if Alive/unknown (define your handling of missing).
+- Event indicator = 1 if Dead, 0 if Alive/unknown 
 
 ```{r}
 brca_surv = brca |>
