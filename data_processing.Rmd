@@ -6,7 +6,7 @@ output:
     toc: true
     toc_float: true
 ---
-```{r}
+```{r, include = FALSE}
 knitr::opts_chunk$set(
 echo = TRUE,
 message = FALSE,
@@ -24,7 +24,7 @@ This project uses a de-identified, publicly available breast cancer dataset obta
 
 Before analysis, observations with missing patient_id were removed, as these corresponded to empty rows at the bottom of the file. For the survival analysis, we restricted to patients with non-missing dates of surgery and last follow-up, non-missing vital status, and non-negative follow-up time, resulting in 317 patients included in the Kaplan–Meier and log-rank analyses.
 
-```{r}
+```{r, include = FALSE}
 brca_df_raw = read_csv("BRCA.csv") |>
 janitor::clean_names() |>
 filter(!is.na(patient_id)) # remove empty rows at the bottom
@@ -62,7 +62,7 @@ patient_status: Vital status at last follow-up (Alive or Dead).
 
 The primary outcome for this project is patient_status, indicating whether the patient was alive or dead at last follow-up. For survival analysis, we use date_of_surgery and date_of_last_visit to define follow-up time (in days) and combine this with patient_status to create a time-to-event and censoring indicator.
 
-```{r}
+```{r, include = FALSE}
 brca = brca_df_raw |> 
   mutate( #categorical variables
     gender       = factor(gender),
