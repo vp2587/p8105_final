@@ -6,4 +6,15 @@ output:
     toc: true
     toc_float: true
 ---
-Hello
+
+### 1) Introduction / Motivation 
+
+Breast cancer is a major global health burden and a leading cause of cancer-related death among women. While clinical characteristics such as tumour stage and histology inform prognosis, molecular biomarkers may offer additional insight into disease progression and survival. In this project, we describe patterns of clinical features and protein biomarkers in the BRCA dataset, assess whether biomarker levels differ across patient groups, build a regression model to predict survival status, and conduct basic survival analysis to explore factors associated with follow-up outcomes.
+
+
+
+### 2) Data
+### Source and study population
+This project uses a de-identified, publicly available breast cancer dataset obtained from Kaggle (https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code). The dataset includes 334 patients with primary breast cancer who underwent surgical treatment. For each patient, the file contains demographic information (age, gender), tumour characteristics (tumour stage, histology, ER/PR/HER2 receptor status), several protein biomarkers (Protein1–Protein4), treatment information (type of surgery), and follow-up data (date of surgery, date of last visit, and vital status).
+
+Before analysis, observations with missing `patient_id` were removed, as these corresponded to empty rows at the bottom of the file. For the survival analysis, we restricted to patients with non-missing dates of surgery and last follow-up, non-missing vital status, and non-negative follow-up time, resulting in 317 patients included in the Kaplan–Meier and log-rank analyses.
