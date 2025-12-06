@@ -8,12 +8,13 @@ navbar:
       href: index.html
     - text: "About Us"
       href: about.html
+    - text: "Data Processing"
+      href: data_processing.html
     - text: "Multiple Logisitic Regression"
       href: multi_log_reg.html
     - text: "ANOVA"
       href: anova.html
-    - text: "Data Processing"
-      href: data_processing.html
+
 
 output:
   html_document:
