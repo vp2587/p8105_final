@@ -74,6 +74,7 @@ After `clean_names()`, your key columns are:
 Time variables 
 
 - Clarify outcome: patient status (Alive/Dead).
+- `date_of_surgery`: Calendar date of the primary breast cancer surgery.
 - `date_of_last_visit`: Date of last recorded follow-up visit.
 - `patient_status`: Vital status at last follow-up (`Alive` or `Dead`).
 
