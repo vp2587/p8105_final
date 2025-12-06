@@ -16,7 +16,7 @@
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -343,6 +343,9 @@ div.tocify {
 <li>
   <a href="survival.html">Survival Analysis</a>
 </li>
+<li>
+  <a href="discussion.html">Discussion</a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -365,14 +368,6 @@ div.tocify {
 </div>
 
 
-<pre class="r"><code>knitr::opts_chunk$set(
-echo = TRUE,
-message = FALSE,
-warning = FALSE
-)
-
-library(tidyverse)
-library(janitor)</code></pre>
 <div id="source-and-study-population" class="section level1">
 <h1>Source and study population</h1>
 <p>This project uses a de-identified, publicly available breast cancer
@@ -392,9 +387,6 @@ survival analysis, we restricted to patients with non-missing dates of
 surgery and last follow-up, non-missing vital status, and non-negative
 follow-up time, resulting in 317 patients included in the Kaplan–Meier
 and log-rank analyses.</p>
-<pre class="r"><code>brca_df_raw = read_csv(&quot;BRCA.csv&quot;) |&gt;
-janitor::clean_names() |&gt;
-filter(!is.na(patient_id)) # remove empty rows at the bottom</code></pre>
 </div>
 <div id="variables" class="section level1">
 <h1>Variables</h1>
@@ -423,31 +415,6 @@ whether the patient was alive or dead at last follow-up. For survival
 analysis, we use date_of_surgery and date_of_last_visit to define
 follow-up time (in days) and combine this with patient_status to create
 a time-to-event and censoring indicator.</p>
-<pre class="r"><code>brca = brca_df_raw |&gt; 
-  mutate( #categorical variables
-    gender       = factor(gender),
-    tumour_stage = factor(tumour_stage,
-                          levels = c(&quot;I&quot;, &quot;II&quot;, &quot;III&quot;),
-                          ordered = TRUE),
-    histology    = factor(histology),
-    er_status    = factor(er_status),
-    pr_status    = factor(pr_status),
-    her2_status  = factor(her2_status),
-    surgery_type = factor(surgery_type),
-    patient_status = factor(patient_status,
-                            levels = c(&quot;Alive&quot;, &quot;Dead&quot;)),
-    #date variables
-    date_of_surgery     = as.Date(date_of_surgery, format = &quot;%d-%b-%y&quot;),
-    date_of_last_visit  = as.Date(date_of_last_visit, format = &quot;%d-%b-%y&quot;),
-
-    # survival
-    follow_up_time = as.numeric(date_of_last_visit - date_of_surgery),
-    event = case_when(
-      patient_status == &quot;Dead&quot;  ~ 1L,
-      patient_status == &quot;Alive&quot; ~ 0L,
-      TRUE                      ~ NA_integer_
-    )
-  )</code></pre>
 <div id="source-and-study-population." class="section level3">
 <h3>Source and study population.</h3>
 <p>This project uses a de-identified, publicly available breast cancer
@@ -470,9 +437,6 @@ included in the Kaplan–Meier and log-rank analyses.</p>
 </div>
 <div id="data-import-and-cleaning" class="section level3">
 <h3>Data import and cleaning</h3>
-<pre class="r"><code>brca_df_raw = read_csv(&quot;BRCA.csv&quot;) |&gt; 
-  janitor::clean_names() |&gt; 
-  filter(!is.na(patient_id)) #remove empty rows at the bottom</code></pre>
 <div id="variables-1" class="section level4">
 <h4>Variables</h4>
 <p>After <code>clean_names()</code>, your key columns are:</p>
@@ -514,31 +478,6 @@ indicator.</p>
 </div>
 <div id="clean-data-types" class="section level4">
 <h4>Clean data types</h4>
-<pre class="r"><code>brca = brca_df_raw |&gt; 
-  mutate( #categorical variables
-    gender       = factor(gender),
-    tumour_stage = factor(tumour_stage,
-                          levels = c(&quot;I&quot;, &quot;II&quot;, &quot;III&quot;),
-                          ordered = TRUE),
-    histology    = factor(histology),
-    er_status    = factor(er_status),
-    pr_status    = factor(pr_status),
-    her2_status  = factor(her2_status),
-    surgery_type = factor(surgery_type),
-    patient_status = factor(patient_status,
-                            levels = c(&quot;Alive&quot;, &quot;Dead&quot;)),
-    #date variables
-    date_of_surgery     = as.Date(date_of_surgery, format = &quot;%d-%b-%y&quot;),
-    date_of_last_visit  = as.Date(date_of_last_visit, format = &quot;%d-%b-%y&quot;),
-
-    # survival
-    follow_up_time = as.numeric(date_of_last_visit - date_of_surgery),
-    event = case_when(
-      patient_status == &quot;Dead&quot;  ~ 1L,
-      patient_status == &quot;Alive&quot; ~ 0L,
-      TRUE                      ~ NA_integer_
-    )
-  )</code></pre>
 </div>
 </div>
 </div>
