@@ -6,7 +6,61 @@ output:
     toc: true
     toc_float: true
 ---
-# 4) Multiple linear regression: Predicting patient status
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+
+library(tidyverse)
+library(janitor)
+library(broom)
+library(ggplot2)
+library(survminer)
+library(pROC)        
+library(survival)
+library(dplyr)
+library(modelr)
+library(corrplot)
+library(car)
+```
+
+```{r, include = FALSE}
+brca_df_raw = read_csv("BRCA.csv") |> 
+  janitor::clean_names() |> 
+  filter(!is.na(patient_id)) #remove empty rows at the bottom
+```
+
+```{r, include = FALSE}
+brca = brca_df_raw |> 
+  mutate( #categorical variables
+    gender       = factor(gender),
+    tumour_stage = factor(tumour_stage,
+                          levels = c("I", "II", "III"),
+                          ordered = TRUE),
+    histology    = factor(histology),
+    er_status    = factor(er_status),
+    pr_status    = factor(pr_status),
+    her2_status  = factor(her2_status),
+    surgery_type = factor(surgery_type),
+    patient_status = factor(patient_status,
+                            levels = c("Alive", "Dead")),
+    #date variables
+    date_of_surgery     = as.Date(date_of_surgery, format = "%d-%b-%y"),
+    date_of_last_visit  = as.Date(date_of_last_visit, format = "%d-%b-%y"),
+
+    # survival
+    follow_up_time = as.numeric(date_of_last_visit - date_of_surgery),
+    event = case_when(
+      patient_status == "Dead"  ~ 1L,
+      patient_status == "Alive" ~ 0L,
+      TRUE                      ~ NA_integer_
+    )
+  )
+```
+
+# 4) Multiple logistic regression: Predicting patient status
 
 ### Model specification
 - Outcome: patient_status (Alive vs Dead).
