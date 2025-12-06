@@ -27,7 +27,7 @@ Breast cancer is a major global health burden and a leading cause of cancer-rela
 
 # 2) Data
 
-### Source and study population
+### Source and study population.
 This project uses a de-identified, publicly available breast cancer dataset obtained from Kaggle (https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code). The dataset includes 334 patients with primary breast cancer who underwent surgical treatment. For each patient, the file contains demographic information (age, gender), tumour characteristics (tumour stage, histology, ER/PR/HER2 receptor status), several protein biomarkers (Protein1–Protein4), treatment information (type of surgery), and follow-up data (date of surgery, date of last visit, and vital status).
 
 Before analysis, observations with missing `patient_id` were removed, as these corresponded to empty rows at the bottom of the file. For the survival analysis, we restricted to patients with non-missing dates of surgery and last follow-up, non-missing vital status, and non-negative follow-up time, resulting in 317 patients included in the Kaplan–Meier and log-rank analyses.
@@ -57,6 +57,7 @@ After `clean_names()`, your key columns are:
 
 Time variables 
 
+- Clarify outcome: patient status (Alive/Dead).
 - `date_of_surgery`: Calendar date of the primary breast cancer surgery.
 - `date_of_last_visit`: Date of last recorded follow-up visit.
 - `patient_status`: Vital status at last follow-up (`Alive` or `Dead`).
@@ -297,6 +298,7 @@ brca %>%
     legend.position = "none"
   )
 ```
+
 This plot compares the distribution of each protein biomarker across tumour stages I, II, and III. Each protein is shown in a separate panel to make the differences easier to see. The boxplots highlight how biomarker levels change with increasing stage, allowing us to visually assess whether later-stage tumours tend to have higher or lower protein expression. This helps identify proteins that may be associated with disease progression.
 
 ### Protein levels by tumour type (histology)
@@ -501,6 +503,8 @@ ggplot(brca_long_stage, aes(x = tumour_stage, y = value, fill = tumour_stage)) +
 
 ```
 
+Protein1 expression showed very similar distributions across tumour stages I, II, and III. Median levels were close to zero in all three groups, and the interquartile ranges largely overlapped. Although a few outliers were present in each stage, the overall spread of values was comparable, suggesting no meaningful differences in Protein1 expression by tumor stage in this dataset. 
+This interpretation perfectly matches our ANOVA result where p = 0.50 (not significant) and Levene’s test where p = 0.18 (equal variances). Similar patterns were observed for protein2–protein4, with substantial overlap in distributions across tumor stages.
 Protein1 expression showed very similar distributions across tumour stages I, II, and III. Median levels were close to zero in all three groups, and the interquartile ranges largely overlapped. Although a few outliers were present in each stage, the overall spread of values was comparable, suggesting no meaningful differences in Protein1 expression by tumour stage in this dataset. 
 This interpretation perfectly matches our ANOVA result where p = 0.50 (not significant) and Levene’s test where p = 0.18 (equal variances). Similar patterns were observed for protein2–protein4, with substantial overlap in distributions across tumour stages.
 
