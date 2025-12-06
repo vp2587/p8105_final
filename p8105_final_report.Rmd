@@ -20,6 +20,8 @@ library(pROC)
 library(survival)
 library(dplyr)
 library(modelr)
+library(corrplot)
+library(car)
 ```
 
 # 1) Introduction / Motivation 
@@ -392,8 +394,6 @@ histology_status_chisq
 We also tested for an association between histologic tumour type and survival status. Infiltrating ductal carcinoma, infiltrating lobular carcinoma, and mucinous carcinoma all had broadly similar proportions of deaths. The chi-square test (χ² = 3.15, df = 4, p = 0.53) indicated no evidence that mortality differs across histology groups. This finding aligns with the stacked bar plot and suggests that histology alone is not a strong predictor of survival in this sample, although we still consider it as a descriptive variable and a potential adjustment factor in modeling.
 
 ```{r}
-library(corrplot)
-
 protein_cor =
   brca %>% 
   select(starts_with("protein")) %>% 
@@ -592,8 +592,6 @@ The QQ-plots for each protein by tumour stage were reasonably linear, suggesting
 
 ##### Homogeneity of variances (Levene’s Test)
 ```{r}
-library(car)
-
 for (p in protein_vars) {
   print(p)
   print(leveneTest(brca[[p]] ~ brca$tumour_stage))
