@@ -43,14 +43,3 @@ Linkedin: https://www.linkedin.com/in/vpetchger/
 Github: https://github.com/vp2587
 
 </div>
-
-## About the Project
-
-Our project, *Predicting Breast Cancer Outcomes from Clinical Features and Protein Biomarkers*, investigates how clinical variables and protein expression measurements are associated with breast cancer outcomes. We focus on building and evaluating statistical models that aim to capture patterns in the data and provide interpretable summaries of risk.
-
-## About the Dataset
-We use a publicly available breast cancer dataset that includes both clinical information (such as patient characteristics and tumour features) and quantitative protein expression measurements, along with follow-up on patient outcomes. After cleaning and preprocessing the data, we use it to explore associations, create visualizations, and fit predictive models, all of which are documented and reproducible through this website.
-
-All data cleaning, analysis, and plots shown on this site are reproducible and were created using our project code.
-
-Thanks for visiting our project!

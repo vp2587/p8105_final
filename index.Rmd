@@ -15,12 +15,14 @@ output:
 
 Breast cancer is a major global health burden and a leading cause of cancer-related death among women. While clinical characteristics such as tumour stage and histology inform prognosis, molecular biomarkers may offer additional insight into disease progression and survival. In this project, we describe patterns of clinical features and protein biomarkers in the BRCA dataset, assess whether biomarker levels differ across patient groups, build a regression model to predict survival status, and conduct basic survival analysis to explore factors associated with follow-up outcomes.
 
-<p style="text-align: center;">
-  <img src="img/dataset-cover.jpg" alt="Breast cancer illustration" width="70%">
-</p>
+### About the Project
 
-### 2) Data
-### Source and study population
-This project uses a de-identified, publicly available breast cancer dataset obtained from Kaggle (https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code). The dataset includes 334 patients with primary breast cancer who underwent surgical treatment. For each patient, the file contains demographic information (age, gender), tumour characteristics (tumour stage, histology, ER/PR/HER2 receptor status), several protein biomarkers (Protein1–Protein4), treatment information (type of surgery), and follow-up data (date of surgery, date of last visit, and vital status).
+Our project, *Predicting Breast Cancer Outcomes from Clinical Features and Protein Biomarkers*, investigates how clinical variables and protein expression measurements are associated with breast cancer outcomes. We focus on building and evaluating statistical models that aim to capture patterns in the data and provide interpretable summaries of risk.
 
-Before analysis, observations with missing `patient_id` were removed, as these corresponded to empty rows at the bottom of the file. For the survival analysis, we restricted to patients with non-missing dates of surgery and last follow-up, non-missing vital status, and non-negative follow-up time, resulting in 317 patients included in the Kaplan–Meier and log-rank analyses.
+### About the Dataset
+
+We use a publicly available breast cancer dataset that includes both clinical information (such as patient characteristics and tumour features) and quantitative protein expression measurements, along with follow-up on patient outcomes. After cleaning and preprocessing the data, we use it to explore associations, create visualizations, and fit predictive models, all of which are documented and reproducible through this website.
+
+All data cleaning, analysis, and plots shown on this site are reproducible and were created using our project code.
+
+Thanks for visiting our project!
