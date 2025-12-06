@@ -421,10 +421,6 @@ Thus, there is no statistical evidence of differences in biomarker expression by
 
 Conclusion: Although small numerical differences in mean protein levels were observed, these differences were not statistically significant. This suggests that in this dataset, tumour stage alone does not explain variation in protein biomarker expression. This could be due to biological similarity across stages, high within-group variability, or limited power for detecting subtle effects.
 
-✔ ANOVA assumptions were met (Levene’s test okay)
-✔ Standard ANOVA valid
-❌ No statistical differences detected
-❌ No post-hoc tests needed
 
 - Check ANOVA assumptions
 
@@ -544,18 +540,6 @@ ggplot(brca_long_hist, aes(x = histology, y = value, fill = histology)) +
 Across histologic subtypes, protein levels were visually similar with substantial overlap between groups, indicating no detectable expression differences by histology.
 
 This is consistent with the non-significant ANOVA results (all adjusted p-values > 0.36).
-
-## Methods
-- One-way ANOVA per protein.
-- Post-hoc pairwise comparisons (if global p < 0.05).
-
-## Results
-- Brief table of means by group.
-- ANOVA p-values.
-
-```{r}
-
-```
 
 # 6) Survival analysis
 
