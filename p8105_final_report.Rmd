@@ -405,11 +405,9 @@ means_histology
 anova_histology
 ```
 
-Across histologic subtypes, protein levels were visually and statistically similar, with substantial overlap between groups.
-All BH-adjusted ANOVA p-values were > 0.36, indicating no detectable expression differences by histology.
-Consequently, post-hoc pairwise comparisons were not performed.
+Across histologic subtypes, protein levels were visually and statistically similar, with substantial overlap between groups. All BH-adjusted ANOVA p-values were > 0.36, indicating no detectable expression differences by histology. Consequently, post-hoc pairwise comparisons were not performed.
 
-Because no p-values are statistically significant, we check ANOVA assumptions 
+Because no p-values are statistically significant, we check ANOVA assumptions!
 
 ##### Normality (per group per protein)
 ```{r}
@@ -433,8 +431,7 @@ for (p in protein_vars) {
 }
 ```
 
-Levene’s tests indicated no significant variance differences across tumour stage groups for any protein (all p > 0.18).
-Thus, the assumption of equal variances is not violated for any protein, and standard one-way ANOVA is appropriate and valid. Overall, protein levels do not significantly differ by tumour stage in this dataset — not because ANOVA assumptions failed, but because any true effects are likely small relative to within-group variability.
+Levene’s tests indicated no significant variance differences across tumour stage groups for any protein (all p > 0.18). Thus, the assumption of equal variances is not violated for any protein, and standard one-way ANOVA is appropriate and valid. Overall, protein levels do not significantly differ by tumour stage in this dataset — not because ANOVA assumptions failed, but because any true effects are likely small relative to within-group variability.
 
 ##### Boxplot — Proteins by Tumour Stage
 ```{r}
@@ -516,9 +513,10 @@ ggplot(brca_long_hist, aes(x = histology, y = value, fill = histology)) +
 
 ```
 
-Across histologic subtypes, protein levels were visually similar with substantial overlap between groups, indicating no detectable expression differences by histology.
+Across histologic subtypes, protein levels were visually similar with substantial overlap between groups, indicating no detectable expression differences by histology. This is consistent with our non-significant ANOVA results (all adjusted p-values > 0.36).
 
-This is consistent with the non-significant ANOVA results (all adjusted p-values > 0.36).
+Final Conclusion: Overall, there was no evidence that protein biomarker expression differed meaningfully by tumour stage or histologic subtype in this dataset. Although there were small differences in average levels, the large amount of variability within groups and the overlap in distributions suggest that these biomarkers do not strongly reflect clinical disease stage or histology on their own. These findings indicate that additional clinical or molecular factors are likely needed to explain differences in disease characteristics, and that the proteins available in this dataset may have limited value as standalone indicators of disease severity.
+
 
 # 6) Survival analysis
 
