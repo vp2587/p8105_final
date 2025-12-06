@@ -1,0 +1,99 @@
+---
+title: "Multiple Logistic Regression"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
+# 4) Multiple linear regression: Predicting patient status
+
+### Model specification
+- Outcome: patient_status (Alive vs Dead).
+- Predictors: age, tumour_stage, surgery_type, selected proteins.
+- Brief rationale for selected predictors (based on EDA).
+
+### Model fitting
+```{r}
+brca =
+  brca %>% 
+  mutate(
+    target = ifelse(patient_status == "Dead", 1, 0)
+  )
+
+brca_mlr =
+  brca %>%  
+  glm(target ~ age + tumour_stage + surgery_type + protein1 + protein2 +
+        protein3 + protein4, data = .,
+      family = binomial(link = "logit")
+  )
+```
+We fit a multiple logistic regression to predict mortality using clinical predictors such as `age`, `tumour_stage`, `surgery_type`, and the protein biomarkers (`protein1`-`protein4`). These predictors were selected based on exploratory analyses showing differences in survival outcomes across different groups. 
+
+### Model results
+```{r}
+brca_mlr %>% 
+  broom::tidy(exponentiate = TRUE, conf.int = TRUE)
+```
+Model coefficient estimates were expressed as odds ratios. At the 0.05 level, none of the predictors were statistically significant, though the proteins generally expressed a weak positive association with mortality. Tumor stage showed a slight increase in odds of death, but the confidence intervals were wide. Overall, the clinical and protein predictors demonstrated a weak association with patient status.
+
+### Model performance (ROC, AUC)
+```{r}
+roc_brca =
+  brca %>% 
+  mutate(pred_prob = predict(brca_mlr, newdata = ., type = "response")) %>% 
+  roc(target, pred_prob) 
+
+roc_brca %>% 
+  ggroc() +
+  labs(
+    title = "ROC Curve for MLR Model",
+    x = "False Positive Rate",
+    y = "True Negative Rate"
+  ) +
+  theme_minimal()
+
+auc(roc_brca)
+```
+The ROC curve suggests that the model was poor at distinguishing between patients who survived and passed away, with an AUC of `r round(auc(roc_brca), 3)`.
+
+### Cross-validation
+```{r}
+set.seed(123)
+
+cv_df = 
+  crossv_mc(brca, 5) %>% 
+  mutate(
+    train = map(train, as_tibble),
+    test  = map(test,  as_tibble)
+  ) %>% 
+  mutate(
+    mlr_mod = map(
+      .x = train,
+      ~ glm(
+          target ~ age + tumour_stage + surgery_type +
+            protein1 + protein2 + protein3 + protein4,
+          data   = .x,
+          family = binomial(link = "logit")
+        )
+    ),
+    pred_prob = map2(
+      .x = mlr_mod,
+      .y = test,
+      ~ predict(.x, newdata = .y, type = "response")
+    ),
+    auc = map2_dbl(
+      .x = pred_prob,
+      .y = test,
+      ~ pROC::auc(pROC::roc(.y$target, .x))
+    )
+  )
+
+cv_summary =
+  cv_df %>% 
+  summarize(
+    mean_auc = mean(auc),
+    sd_auc   = sd(auc)
+  )
+```
+To assess generalizability, we performed a 5-fold cross-validation. The average cross-validated AUC was `r round(cv_summary$mean_auc, 3)` with a standard deviation of `r round(cv_summary$sd_auc, 3)`. These values suggest that this model was minimally better than randomly predicting patient status.
