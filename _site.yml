@@ -20,6 +20,8 @@ navbar:
       href: discussion.html
     - text: "Full report"
       href: p8105_final_report.html
+    - icon: fa-github
+      href: https://github.com/vp2587/p8105_final
 
 output:
   html_document:
