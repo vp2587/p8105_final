@@ -13,10 +13,10 @@
 
 <title>Multiple Logistic Regression</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -335,6 +335,9 @@ div.tocify {
   <a href="data_processing.html">Data Processing</a>
 </li>
 <li>
+  <a href="EDA.html">Exploratory Data Analysis</a>
+</li>
+<li>
   <a href="multi_log_reg.html">Multiple Logisitic Regression</a>
 </li>
 <li>
@@ -368,9 +371,9 @@ div.tocify {
 </div>
 
 
-<div id="multiple-linear-regression-predicting-patient-status"
+<div id="multiple-logistic-regression-predicting-patient-status"
 class="section level1">
-<h1>4) Multiple linear regression: Predicting patient status</h1>
+<h1>4) Multiple logistic regression: Predicting patient status</h1>
 <div id="model-specification" class="section level3">
 <h3>Model specification</h3>
 <ul>
@@ -430,10 +433,9 @@ predictors demonstrated a weak association with patient status.</p>
 <pre class="r"><code>roc_brca =
   brca %&gt;% 
   mutate(pred_prob = predict(brca_mlr, newdata = ., type = &quot;response&quot;)) %&gt;% 
-  roc(target, pred_prob) </code></pre>
-<pre><code>## Setting levels: control = 0, case = 1</code></pre>
-<pre><code>## Setting direction: controls &lt; cases</code></pre>
-<pre class="r"><code>roc_brca %&gt;% 
+  roc(target, pred_prob) 
+
+roc_brca %&gt;% 
   ggroc() +
   labs(
     title = &quot;ROC Curve for MLR Model&quot;,
@@ -441,7 +443,7 @@ predictors demonstrated a weak association with patient status.</p>
     y = &quot;True Negative Rate&quot;
   ) +
   theme_minimal()</code></pre>
-<p><img src="multi_log_reg_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="multi_log_reg_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <pre class="r"><code>auc(roc_brca)</code></pre>
 <pre><code>## Area under the curve: 0.623</code></pre>
 <p>The ROC curve suggests that the model was poor at distinguishing
@@ -477,18 +479,9 @@ cv_df =
       .y = test,
       ~ pROC::auc(pROC::roc(.y$target, .x))
     )
-  )</code></pre>
-<pre><code>## Setting levels: control = 0, case = 1</code></pre>
-<pre><code>## Setting direction: controls &lt; cases</code></pre>
-<pre><code>## Setting levels: control = 0, case = 1</code></pre>
-<pre><code>## Setting direction: controls &gt; cases</code></pre>
-<pre><code>## Setting levels: control = 0, case = 1</code></pre>
-<pre><code>## Setting direction: controls &lt; cases</code></pre>
-<pre><code>## Setting levels: control = 0, case = 1</code></pre>
-<pre><code>## Setting direction: controls &gt; cases</code></pre>
-<pre><code>## Setting levels: control = 0, case = 1</code></pre>
-<pre><code>## Setting direction: controls &gt; cases</code></pre>
-<pre class="r"><code>cv_summary =
+  )
+
+cv_summary =
   cv_df %&gt;% 
   summarize(
     mean_auc = mean(auc),
