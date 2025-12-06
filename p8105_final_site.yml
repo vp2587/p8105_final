@@ -5,8 +5,6 @@ navbar:
   right:
     - text: "Home"
       href: index.html
-    - text: "Logistical Regression"
-      href: log_reg.html
 output:
   html_document:
     theme: darkly
