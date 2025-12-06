@@ -311,7 +311,6 @@ brca %>%
   geom_boxplot(alpha = 0.8) +
   facet_wrap(~ protein, scales = "free_y") +
   labs(
-    title = "Protein Levels by Tumor Type (Histology)",
     title = "Protein Levels by tumour Type (Histology)",
     x = "Histology",
     y = "Protein Level"
