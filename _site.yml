@@ -1,0 +1,14 @@
+name: "Home"
+output_dir: "docs"
+
+navbar:
+  title: "Predicting Breast Cancer Outcomes from Clinical Features and Protein Biomarkers"
+  right:
+    - text: "Home"
+      href: index.html
+    - text: "About Us"
+      href: about.html
+
+output:
+  html_document:
+    theme: darkly
