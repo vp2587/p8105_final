@@ -11,7 +11,7 @@
 
 
 
-<title>Predicting Breast Cancer Outcomes from Clinical Features and Protein Biomarkers</title>
+<title>Data Processing</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -351,13 +351,204 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Predicting Breast Cancer Outcomes from
-Clinical Features and Protein Biomarkers</h1>
+<h1 class="title toc-ignore">Data Processing</h1>
 
 </div>
 
 
-<p>Hello</p>
+<pre class="r"><code>knitr::opts_chunk$set(
+echo = TRUE,
+message = FALSE,
+warning = FALSE
+)
+
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ───────────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+## ✔ purrr     1.1.0     
+## ── Conflicts ─────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(janitor)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;janitor&#39;
+## 
+## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     chisq.test, fisher.test</code></pre>
+<div id="source-and-study-population" class="section level1">
+<h1>Source and study population</h1>
+<p>This project uses a de-identified, publicly available breast cancer
+dataset obtained from Kaggle (<a
+href="https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code"
+class="uri">https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code</a>
+). The dataset includes 334 patients with primary breast cancer who
+underwent surgical treatment. For each patient, the file contains
+demographic information (age, gender), tumour characteristics (tumour
+stage, histology, ER/PR/HER2 receptor status), several protein
+biomarkers (Protein1–Protein4), treatment information (type of surgery),
+and follow-up data (date of surgery, date of last visit, and vital
+status).</p>
+<p>Before analysis, observations with missing patient_id were removed,
+as these corresponded to empty rows at the bottom of the file. For the
+survival analysis, we restricted to patients with non-missing dates of
+surgery and last follow-up, non-missing vital status, and non-negative
+follow-up time, resulting in 317 patients included in the Kaplan–Meier
+and log-rank analyses.</p>
+<pre class="r"><code>brca_df_raw = read_csv(&quot;BRCA.csv&quot;) |&gt;
+janitor::clean_names() |&gt;
+filter(!is.na(patient_id)) # remove empty rows at the bottom</code></pre>
+</div>
+<div id="variables" class="section level1">
+<h1>Variables</h1>
+<p>After cleaning the key columns are:</p>
+<p>patient_id: Unique identifier for each patient.</p>
+<p>age: Age at time of surgery (years), treated as a continuous
+covariate.</p>
+<p>gender: Patient sex (factor).</p>
+<p>protein1–protein4: Continuous protein biomarker measurements.</p>
+<p>tumour_stage: Clinical tumour stage at diagnosis (I, II, III),
+treated as an ordered factor.</p>
+<p>histology: Histological subtype of the breast tumour
+(categorical).</p>
+<p>er_status: Oestrogen receptor (ER) status (e.g.,
+Positive/Negative).</p>
+<p>pr_status: Progesterone receptor (PR) status.</p>
+<p>her2_status: HER2 receptor status.</p>
+<p>surgery_type: Type of surgery performed (e.g., lumpectomy,
+mastectomy).</p>
+<p>date_of_surgery: Calendar date of the primary breast cancer
+surgery.</p>
+<p>date_of_last_visit: Date of last recorded follow-up visit.</p>
+<p>patient_status: Vital status at last follow-up (Alive or Dead).</p>
+<p>The primary outcome for this project is patient_status, indicating
+whether the patient was alive or dead at last follow-up. For survival
+analysis, we use date_of_surgery and date_of_last_visit to define
+follow-up time (in days) and combine this with patient_status to create
+a time-to-event and censoring indicator.</p>
+<pre class="r"><code>brca = brca_df_raw |&gt; 
+  mutate( #categorical variables
+    gender       = factor(gender),
+    tumour_stage = factor(tumour_stage,
+                          levels = c(&quot;I&quot;, &quot;II&quot;, &quot;III&quot;),
+                          ordered = TRUE),
+    histology    = factor(histology),
+    er_status    = factor(er_status),
+    pr_status    = factor(pr_status),
+    her2_status  = factor(her2_status),
+    surgery_type = factor(surgery_type),
+    patient_status = factor(patient_status,
+                            levels = c(&quot;Alive&quot;, &quot;Dead&quot;)),
+    #date variables
+    date_of_surgery     = as.Date(date_of_surgery, format = &quot;%d-%b-%y&quot;),
+    date_of_last_visit  = as.Date(date_of_last_visit, format = &quot;%d-%b-%y&quot;),
+
+    # survival
+    follow_up_time = as.numeric(date_of_last_visit - date_of_surgery),
+    event = case_when(
+      patient_status == &quot;Dead&quot;  ~ 1L,
+      patient_status == &quot;Alive&quot; ~ 0L,
+      TRUE                      ~ NA_integer_
+    )
+  )</code></pre>
+<div id="source-and-study-population." class="section level3">
+<h3>Source and study population.</h3>
+<p>This project uses a de-identified, publicly available breast cancer
+dataset obtained from Kaggle (<a
+href="https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code"
+class="uri">https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code</a>).
+The dataset includes 334 patients with primary breast cancer who
+underwent surgical treatment. For each patient, the file contains
+demographic information (age, gender), tumour characteristics (tumour
+stage, histology, ER/PR/HER2 receptor status), several protein
+biomarkers (Protein1–Protein4), treatment information (type of surgery),
+and follow-up data (date of surgery, date of last visit, and vital
+status).</p>
+<p>Before analysis, observations with missing <code>patient_id</code>
+were removed, as these corresponded to empty rows at the bottom of the
+file. For the survival analysis, we restricted to patients with
+non-missing dates of surgery and last follow-up, non-missing vital
+status, and non-negative follow-up time, resulting in 317 patients
+included in the Kaplan–Meier and log-rank analyses.</p>
+</div>
+<div id="data-import-and-cleaning" class="section level3">
+<h3>Data import and cleaning</h3>
+<pre class="r"><code>brca_df_raw = read_csv(&quot;BRCA.csv&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
+  filter(!is.na(patient_id)) #remove empty rows at the bottom</code></pre>
+<div id="variables-1" class="section level4">
+<h4>Variables</h4>
+<p>After <code>clean_names()</code>, your key columns are:</p>
+<ul>
+<li><code>patient_id</code>: Unique identifier for each patient.</li>
+<li><code>age</code>: Age at time of surgery (years), treated as a
+continuous covariate.</li>
+<li><code>gender</code>: Patient sex (factor).</li>
+<li><code>protein1</code>–<code>protein4</code>: Continuous protein
+biomarker measurements.</li>
+<li><code>tumour_stage</code>: Clinical tumour stage at diagnosis (I,
+II, III), treated as an ordered factor.</li>
+<li><code>histology</code>: Histological subtype of the breast tumour
+(categorical).</li>
+<li><code>er_status</code>: Oestrogen receptor (ER) status (e.g.,
+Positive/Negative).</li>
+<li><code>pr_status</code>: Progesterone receptor (PR) status.</li>
+<li><code>her2_status</code>: HER2 receptor status.</li>
+<li><code>surgery_type</code>: Type of surgery performed (e.g.,
+lumpectomy, mastectomy).</li>
+</ul>
+<p>Time variables</p>
+<ul>
+<li>Clarify outcome: patient status (Alive/Dead).</li>
+<li><code>date_of_surgery</code>: Calendar date of the primary breast
+cancer surgery.</li>
+<li><code>date_of_last_visit</code>: Date of last recorded follow-up
+visit.</li>
+<li><code>patient_status</code>: Vital status at last follow-up
+(<code>Alive</code> or <code>Dead</code>).</li>
+</ul>
+<p>The primary outcome for this project is
+<strong>patient_status</strong>, indicating whether the patient was
+alive or dead at last follow-up. For survival analysis, we use
+<code>date_of_surgery</code> and <code>date_of_last_visit</code> to
+define follow-up time (in days) and combine this with
+<code>patient_status</code> to create a time-to-event and censoring
+indicator.</p>
+</div>
+<div id="clean-data-types" class="section level4">
+<h4>Clean data types</h4>
+<pre class="r"><code>brca = brca_df_raw |&gt; 
+  mutate( #categorical variables
+    gender       = factor(gender),
+    tumour_stage = factor(tumour_stage,
+                          levels = c(&quot;I&quot;, &quot;II&quot;, &quot;III&quot;),
+                          ordered = TRUE),
+    histology    = factor(histology),
+    er_status    = factor(er_status),
+    pr_status    = factor(pr_status),
+    her2_status  = factor(her2_status),
+    surgery_type = factor(surgery_type),
+    patient_status = factor(patient_status,
+                            levels = c(&quot;Alive&quot;, &quot;Dead&quot;)),
+    #date variables
+    date_of_surgery     = as.Date(date_of_surgery, format = &quot;%d-%b-%y&quot;),
+    date_of_last_visit  = as.Date(date_of_last_visit, format = &quot;%d-%b-%y&quot;),
+
+    # survival
+    follow_up_time = as.numeric(date_of_last_visit - date_of_surgery),
+    event = case_when(
+      patient_status == &quot;Dead&quot;  ~ 1L,
+      patient_status == &quot;Alive&quot; ~ 0L,
+      TRUE                      ~ NA_integer_
+    )
+  )</code></pre>
+</div>
+</div>
+</div>
 
 
 
