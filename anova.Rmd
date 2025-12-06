@@ -66,7 +66,7 @@ brca = brca_df_raw |>
 protein_vars <- names(brca)[grepl("^protein", names(brca))]
 ```
 
-##### Do protein levels differ by tumour stage?
+### Do protein levels differ by tumour stage?
 ```{r}
 # group means by tumour_stage
 means_tumour_stage <- brca |>
@@ -105,7 +105,7 @@ anova_tumour_stage
 
 For all four proteins (protein1–protein4), the global ANOVA tests were not statistically significant (all BH-adjusted p-values > 0.77). Thus, there is no statistical evidence of differences in biomarker expression by tumour stage in this cohort, and post-hoc pairwise comparisons were not pursued. Although small numerical differences in mean protein levels were observed, these differences were not statistically significant. This suggests that, in this dataset, tumour stage alone does not explain variation in protein biomarker expression. This could be due to biological similarity across stages, high within-group variability, or limited power for detecting subtle effects.
 
-##### Do protein levels differ by histology?
+### Do protein levels differ by histology?
 ```{r}
 # group means by histology
 means_histology <- brca |>
@@ -146,7 +146,7 @@ Across histologic subtypes, protein levels were visually and statistically simil
 
 Because no p-values are statistically significant, we check ANOVA assumptions!
 
-##### Normality (per group per protein)
+### Normality (per group per protein)
 ```{r}
 for (p in protein_vars) {
 print(
@@ -158,7 +158,7 @@ title = paste("QQ-Plot:", p, "by tumour stage"))
 
 The QQ-plots for each protein by tumour stage were reasonably linear, suggesting that the normality assumption is acceptable for these ANOVA models.
 
-##### Homogeneity of variances (Levene’s Test)
+### Homogeneity of variances (Levene’s Test)
 ```{r}
 for (p in protein_vars) {
   print(p)
@@ -168,7 +168,7 @@ for (p in protein_vars) {
 
 Levene’s tests indicated no significant variance differences across tumour stage groups for any protein (all p > 0.18). Thus, the assumption of equal variances is not violated for any protein, and standard one-way ANOVA is appropriate and valid. Overall, protein levels do not significantly differ by tumour stage in this dataset — not because ANOVA assumptions failed, but because any true effects are likely small relative to within-group variability.
 
-##### Boxplot — Proteins by Tumour Stage
+### Boxplot — Proteins by Tumour Stage
 ```{r}
 # Identify proteins
 protein_vars <- names(brca)[grepl("^protein", names(brca))]
@@ -209,7 +209,7 @@ This interpretation perfectly matches our ANOVA result where p = 0.50 (not signi
 Protein1 expression showed very similar distributions across tumour stages I, II, and III. Median levels were close to zero in all three groups, and the interquartile ranges largely overlapped. Although a few outliers were present in each stage, the overall spread of values was comparable, suggesting no meaningful differences in Protein1 expression by tumour stage in this dataset. 
 This interpretation perfectly matches our ANOVA result where p = 0.50 (not significant) and Levene’s test where p = 0.18 (equal variances). Similar patterns were observed for protein2–protein4, with substantial overlap in distributions across tumour stages.
 
-##### Boxplot - Protein by Histology
+### Boxplot - Protein by Histology
 ```{r}
 # Identify protein variables
 protein_vars <- names(brca)[grepl("^protein", names(brca))]

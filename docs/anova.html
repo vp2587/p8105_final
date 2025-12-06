@@ -340,6 +340,9 @@ div.tocify {
 <li>
   <a href="anova.html">ANOVA</a>
 </li>
+<li>
+  <a href="survival.html">Survival Analysis</a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -368,8 +371,8 @@ class="section level1">
 <pre class="r"><code># identify protein biomarker columns (protein1–protein4)
 protein_vars &lt;- names(brca)[grepl(&quot;^protein&quot;, names(brca))]</code></pre>
 <div id="do-protein-levels-differ-by-tumour-stage"
-class="section level5">
-<h5>Do protein levels differ by tumour stage?</h5>
+class="section level3">
+<h3>Do protein levels differ by tumour stage?</h3>
 <pre class="r"><code># group means by tumour_stage
 means_tumour_stage &lt;- brca |&gt;
   select(tumour_stage, all_of(protein_vars)) |&gt;
@@ -437,8 +440,8 @@ This could be due to biological similarity across stages, high
 within-group variability, or limited power for detecting subtle
 effects.</p>
 </div>
-<div id="do-protein-levels-differ-by-histology" class="section level5">
-<h5>Do protein levels differ by histology?</h5>
+<div id="do-protein-levels-differ-by-histology" class="section level3">
+<h3>Do protein levels differ by histology?</h3>
 <pre class="r"><code># group means by histology
 means_histology &lt;- brca |&gt;
   select(histology, all_of(protein_vars)) |&gt;
@@ -502,8 +505,8 @@ comparisons were not performed.</p>
 <p>Because no p-values are statistically significant, we check ANOVA
 assumptions!</p>
 </div>
-<div id="normality-per-group-per-protein" class="section level5">
-<h5>Normality (per group per protein)</h5>
+<div id="normality-per-group-per-protein" class="section level3">
+<h3>Normality (per group per protein)</h3>
 <pre class="r"><code>for (p in protein_vars) {
 print(
 ggqqplot(brca, x = p, facet.by = &quot;tumour_stage&quot;,
@@ -515,8 +518,8 @@ title = paste(&quot;QQ-Plot:&quot;, p, &quot;by tumour stage&quot;))
 suggesting that the normality assumption is acceptable for these ANOVA
 models.</p>
 </div>
-<div id="homogeneity-of-variances-levenes-test" class="section level5">
-<h5>Homogeneity of variances (Levene’s Test)</h5>
+<div id="homogeneity-of-variances-levenes-test" class="section level3">
+<h3>Homogeneity of variances (Levene’s Test)</h3>
 <pre class="r"><code>for (p in protein_vars) {
   print(p)
   print(leveneTest(brca[[p]] ~ brca$tumour_stage))
@@ -549,8 +552,8 @@ do not significantly differ by tumour stage in this dataset — not
 because ANOVA assumptions failed, but because any true effects are
 likely small relative to within-group variability.</p>
 </div>
-<div id="boxplot-proteins-by-tumour-stage" class="section level5">
-<h5>Boxplot — Proteins by Tumour Stage</h5>
+<div id="boxplot-proteins-by-tumour-stage" class="section level3">
+<h3>Boxplot — Proteins by Tumour Stage</h3>
 <pre class="r"><code># Identify proteins
 protein_vars &lt;- names(brca)[grepl(&quot;^protein&quot;, names(brca))]
 
@@ -603,8 +606,8 @@ Levene’s test where p = 0.18 (equal variances). Similar patterns were
 observed for protein2–protein4, with substantial overlap in
 distributions across tumour stages.</p>
 </div>
-<div id="boxplot---protein-by-histology" class="section level5">
-<h5>Boxplot - Protein by Histology</h5>
+<div id="boxplot---protein-by-histology" class="section level3">
+<h3>Boxplot - Protein by Histology</h3>
 <pre class="r"><code># Identify protein variables
 protein_vars &lt;- names(brca)[grepl(&quot;^protein&quot;, names(brca))]
 
