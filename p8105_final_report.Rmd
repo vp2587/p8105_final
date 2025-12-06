@@ -1,7 +1,10 @@
 ---
 title: "Predicting Breast Cancer Outcomes from Clinical Features and Protein Biomarkers"
 author: "Veerapetch Petchger, Clement Li, Heather Lu, Xiucheng (Eric) Zhang"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
