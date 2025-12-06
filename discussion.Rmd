@@ -1,0 +1,15 @@
+---
+title: "Discussion"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
+# 7) Discussion 
+
+Across this cohort of 334 surgically treated breast cancer patients, we found that basic clinical characteristics and the four available protein biomarkers carried only modest prognostic information for survival status at last follow-up. Descriptively, most patients were middle-aged or older, had infiltrating ductal carcinoma, and presented with stage I–II disease. Age did not differ meaningfully between patients who were alive versus dead at last contact, and contingency‐table analyses showed no statistically significant association between survival status and either tumour stage or histologic subtype, despite patterns that were directionally consistent with worse outcomes in higher stages.
+
+The protein biomarkers also showed limited differentiation across clinical groups. Mean expression levels of Protein1–Protein4 were similar by stage and by histology, and one-way ANOVA models (with assumptions reasonably satisfied) did not detect significant group differences after multiple-testing correction. Correlation analyses suggested that the four proteins were not perfectly redundant but also did not reveal any single marker with clearly distinct behaviour. In multivariable logistic regression, a model including age, tumour stage, surgery type, and all four proteins achieved only modest discrimination for death versus survival on cross-validation, indicating that this combination of clinical and biomarker information explains only part of the variability in outcomes.
+
+Time-to-event analyses told a similar story. The overall Kaplan–Meier curve showed relatively good long-term survival, with a gradual decline in survival probability over several years. Stratified curves by tumour stage displayed the expected ordering (stage III tending to have poorer survival than stages I and II), but the log-rank test did not provide strong statistical evidence for differences between stages in this dataset. Survival curves by HER2 status were almost completely overlapping, and the log-rank test again showed no evidence of separation. Taken together, these results suggest that, in this relatively small observational dataset, conventional clinical variables and this limited protein panel provide only weak additional prognostic information, underscoring the need for larger cohorts and richer molecular profiling to more precisely characterise factors that drive breast cancer outcomes.
