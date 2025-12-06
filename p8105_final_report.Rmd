@@ -23,14 +23,14 @@ library(dplyr)
 
 # 1) Introduction / Motivation (CLEMENT)
 
-Breast cancer is a major global health burden and a leading cause of cancer-related death among women. While clinical characteristics such as tumour stage and histology inform prognosis, molecular biomarkers may offer additional insight into disease progression and survival. In this project, we describe patterns of clinical features and protein biomarkers in the BRCA dataset, assess whether biomarker levels differ across patient groups, build a logistic regression model to predict survival status, and conduct basic survival analysis to explore factors associated with follow-up outcomes.
+Breast cancer is a major global health burden and a leading cause of cancer-related death among women. While clinical characteristics such as tumour stage and histology inform prognosis, molecular biomarkers may offer additional insight into disease progression and survival. In this project, we describe patterns of clinical features and protein biomarkers in the BRCA dataset, assess whether biomarker levels differ across patient groups, build a logistic model to predict survival status, and conduct basic survival analysis to explore factors associated with follow-up outcomes.
 
 # 2) Data
 
 ### Source and study population
-- Kaggle dataset (334 breast cancer patients undergoing surgery).
-- Link to source.
-- Key inclusion/exclusion notes (if you drop rows).
+This project uses a de-identified, publicly available breast cancer dataset obtained from Kaggle (https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code). The dataset includes 334 patients with primary breast cancer who underwent surgical treatment. For each patient, the file contains demographic information (age, gender), tumour characteristics (tumour stage, histology, ER/PR/HER2 receptor status), several protein biomarkers (Protein1–Protein4), treatment information (type of surgery), and follow-up data (date of surgery, date of last visit, and vital status).
+
+Before analysis, observations with missing `patient_id` were removed, as these corresponded to empty rows at the bottom of the file. For the survival analysis, we  restricted to patients with non-missing dates of surgery and last follow-up, non-missing vital status, and non-negative follow-up time, resulting in 317 patients included in the Kaplan–Meier and log-rank analyses.
 
 ### Data import and cleaning
 
@@ -44,23 +44,24 @@ brca_df_raw = read_csv("BRCA.csv") |>
 
 After `clean_names()`, your key columns are:
 
-- `patient_id`
-- `age`
-- `gender`
-- `protein1`–`protein4`
-- `tumour_stage`
-- `histology`
-- `er_status`, `pr_status`, `her2_status`
-- `surgery_type`
-- `date_of_surgery`
-- `date_of_last_visit`
-- `patient_status`
+- `patient_id`: Unique identifier for each patient.
+- `age`: Age at time of surgery (years), treated as a continuous covariate.
+- `gender`: Patient sex (factor).
+- `protein1`–`protein4`: Continuous protein biomarker measurements.
+- `tumour_stage`: Clinical tumour stage at diagnosis (I, II, III), treated as an ordered factor.
+- `histology`: Histological subtype of the breast tumour (categorical).
+- `er_status`: Oestrogen receptor (ER) status (e.g., Positive/Negative).
+- `pr_status`: Progesterone receptor (PR) status.
+- `her2_status`: HER2 receptor status.
+- `surgery_type`: Type of surgery performed (e.g., lumpectomy, mastectomy).
 
-- List key variables with short descriptions.
+Time variables 
 
-- Clarify outcome: patient status (Alive/Dead).
+- `date_of_surgery`: Calendar date of the primary breast cancer surgery.
+- `date_of_last_visit`: Date of last recorded follow-up visit.
+- `patient_status`: Vital status at last follow-up (`Alive` or `Dead`).
 
-- Clarify time variables: Date_of_Surgery, Date_of_Last_Visit.
+The primary outcome for this project is **patient_status**, indicating whether the patient was alive or dead at last follow-up. For survival analysis, we use `date_of_surgery` and `date_of_last_visit` to define follow-up time (in days) and combine this with `patient_status` to create a time-to-event and censoring indicator.
 
 #### Clean data types
 
