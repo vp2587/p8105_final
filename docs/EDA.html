@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Eric Zhang" />
+
+<meta name="date" content="2025-12-06" />
+
+<title>EDA</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Predicting Breast Cancer Outcomes from Clinical Features and Protein Biomarkers</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About Us</a>
+</li>
+<li>
+  <a href="data_processing.html">Data Processing</a>
+</li>
+<li>
+  <a href="multi_log_reg.html">Multiple Logisitic Regression</a>
+</li>
+<li>
+  <a href="anova.html">ANOVA</a>
+</li>
+<li>
+  <a href="survival.html">Survival Analysis</a>
+</li>
+<li>
+  <a href="discussion.html">Discussion</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">EDA</h1>
+<h4 class="author">Eric Zhang</h4>
+<h4 class="date">2025-12-06</h4>
+
+</div>
+
+
+<div id="exploratory-data-analysis-eda" class="section level2">
+<h2>3) Exploratory Data Analysis (EDA)</h2>
+</div>
+<div id="eda-1.-summary-tables" class="section level2">
+<h2>EDA 1. Summary Tables</h2>
+<div id="patient-characteristics-summary" class="section level3">
+<h3>Patient Characteristics Summary</h3>
+<pre class="r"><code>brca %&gt;% 
+  select(age, gender, tumour_stage, histology, er_status, pr_status, her2_status, surgery_type, patient_status) |&gt; 
+  skimr::skim()</code></pre>
+<table>
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">%&gt;%(…)</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">334</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">9</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">factor</td>
+<td align="left">8</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: factor</strong></p>
+<table>
+<colgroup>
+<col width="16%" />
+<col width="10%" />
+<col width="15%" />
+<col width="8%" />
+<col width="9%" />
+<col width="39%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="left">ordered</th>
+<th align="right">n_unique</th>
+<th align="left">top_counts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">gender</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="left">FALSE</td>
+<td align="right">2</td>
+<td align="left">FEM: 330, MAL: 4</td>
+</tr>
+<tr class="even">
+<td align="left">tumour_stage</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="left">TRUE</td>
+<td align="right">3</td>
+<td align="left">II: 189, III: 81, I: 64</td>
+</tr>
+<tr class="odd">
+<td align="left">histology</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="left">FALSE</td>
+<td align="right">3</td>
+<td align="left">Inf: 233, Inf: 89, Muc: 12</td>
+</tr>
+<tr class="even">
+<td align="left">er_status</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="left">FALSE</td>
+<td align="right">1</td>
+<td align="left">Pos: 334</td>
+</tr>
+<tr class="odd">
+<td align="left">pr_status</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="left">FALSE</td>
+<td align="right">1</td>
+<td align="left">Pos: 334</td>
+</tr>
+<tr class="even">
+<td align="left">her2_status</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="left">FALSE</td>
+<td align="right">2</td>
+<td align="left">Neg: 305, Pos: 29</td>
+</tr>
+<tr class="odd">
+<td align="left">surgery_type</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="left">FALSE</td>
+<td align="right">4</td>
+<td align="left">Oth: 105, Mod: 96, Sim: 67, Lum: 66</td>
+</tr>
+<tr class="even">
+<td align="left">patient_status</td>
+<td align="right">13</td>
+<td align="right">0.96</td>
+<td align="left">FALSE</td>
+<td align="right">2</td>
+<td align="left">Ali: 255, Dea: 66</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col width="18%" />
+<col width="13%" />
+<col width="18%" />
+<col width="7%" />
+<col width="7%" />
+<col width="3%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="6%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">age</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">58.89</td>
+<td align="right">12.96</td>
+<td align="right">29</td>
+<td align="right">49</td>
+<td align="right">58</td>
+<td align="right">68</td>
+<td align="right">90</td>
+<td align="left">▂▇▇▅▂</td>
+</tr>
+</tbody>
+</table>
+<p>This table summarizes the main clinical characteristics of the 334
+patients in the dataset, including age, gender, tumour stage, histology,
+hormone receptor status, HER2 status, surgery type, and vital status at
+last follow up. It gives basic statistics such as the mean and spread
+for age, as well as counts and percentages for each category, and
+provides an overall picture of who is represented in this breast cancer
+cohort.</p>
+</div>
+<div id="protein-biomarker-summary" class="section level3">
+<h3>Protein Biomarker Summary</h3>
+<pre class="r"><code>brca %&gt;% 
+  summarise(
+    across(starts_with(&quot;protein&quot;), 
+           list(mean = mean, sd = sd, min = min, max = max), 
+           na.rm = TRUE)
+  )</code></pre>
+<pre><code>## # A tibble: 1 × 16
+##   protein1_mean protein1_sd protein1_min protein1_max protein2_mean protein2_sd
+##           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;
+## 1       -0.0300       0.564        -2.34         1.59         0.947       0.912
+## # ℹ 10 more variables: protein2_min &lt;dbl&gt;, protein2_max &lt;dbl&gt;,
+## #   protein3_mean &lt;dbl&gt;, protein3_sd &lt;dbl&gt;, protein3_min &lt;dbl&gt;,
+## #   protein3_max &lt;dbl&gt;, protein4_mean &lt;dbl&gt;, protein4_sd &lt;dbl&gt;,
+## #   protein4_min &lt;dbl&gt;, protein4_max &lt;dbl&gt;</code></pre>
+<p>This table describes the four anonymized protein biomarkers in the
+dataset by reporting their mean, standard deviation, and observed range.
+These summaries help us see the typical expression level and variability
+of each protein across patients, which is useful context for later
+modeling and group comparisons.</p>
+</div>
+</div>
+<div id="eda-2.-distribution-visualization" class="section level2">
+<h2>EDA 2. Distribution Visualization</h2>
+<div id="age-distribution" class="section level3">
+<h3>Age Distribution</h3>
+<pre class="r"><code>brca %&gt;% 
+  ggplot(aes(x = age)) +
+  geom_histogram(bins = 30, fill = &quot;steelblue&quot;, alpha = 0.7) +
+  labs(title = &quot;Age Distribution of Breast Cancer Patients&quot;,
+       x = &quot;Age&quot;, y = &quot;Count&quot;)</code></pre>
+<p><img src="EDA_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+This histogram shows how patient age is distributed in the cohort. It
+highlights the most common age range at diagnosis or surgery and allows
+us to see whether the sample is concentrated in midlife, older age, or
+spread more evenly across the adult lifespan.</p>
+</div>
+<div id="protein-distribution" class="section level3">
+<h3>Protein distribution</h3>
+<pre class="r"><code>brca %&gt;%  
+  pivot_longer(starts_with(&quot;protein&quot;), names_to = &quot;protein&quot;, values_to = &quot;value&quot;) |&gt; 
+  ggplot(aes(x=value)) +
+  geom_density(fill=&quot;pink&quot;, alpha=0.4) +
+  facet_wrap(~protein, scales=&quot;free&quot;) +
+  labs(title = &quot;Distribution of Protein Biomarkers&quot;)</code></pre>
+<p><img src="EDA_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+These density plots display the distribution of each of the four protein
+biomarkers across all patients. By looking at the shapes of the curves,
+we can see whether each biomarker is approximately symmetric or skewed,
+whether there are long tails, and whether any proteins appear to have
+multiple modes or outlying values.</p>
+</div>
+</div>
+<div id="eda-3.-classification-visulization" class="section level2">
+<h2>EDA 3. Classification Visulization</h2>
+<div id="carcinoma-type-classification" class="section level3">
+<h3>Carcinoma Type Classification</h3>
+<pre class="r"><code>carcinoma_type_pie =
+  brca %&gt;% 
+  count(histology) %&gt;% 
+  mutate(
+    prop  = n / sum(n),
+    label = scales::percent(prop, accuracy = 0.1)
+  ) %&gt;% 
+  ggplot(aes(x = &quot;&quot;, y = prop, fill = histology)) +
+  geom_col(color = &quot;white&quot;) +
+  coord_polar(theta = &quot;y&quot;) +
+  geom_text(aes(label = label),
+            position = position_stack(vjust = 0.5),
+            size = 3) +
+  labs(title = &quot;Carcinoma / Histology Classification&quot;,
+       fill  = &quot;Histology&quot;) +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+carcinoma_type_pie</code></pre>
+<p><img src="EDA_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+This pie chart summarizes the distribution of histologic tumour types in
+the dataset. The largest slice corresponds to infiltrating ductal
+carcinoma, reflecting that most patients in this cohort have IDC, while
+infiltrating lobular carcinoma and mucinous carcinoma make up smaller
+proportions. This mirrors the expected pattern in clinical practice,
+where IDC is the most common invasive breast cancer subtype.</p>
+<p>Infiltrating ductal carcinoma (IDC) is the most common breast cancer
+type. It begins in the milk ducts and grows into the surrounding breast
+tissue. As it progresses, IDC can spread through the lymphatic system or
+bloodstream to other parts of the body.</p>
+<p>Mucinous carcinoma is a breast cancer subtype in which tumour cells
+grow within mucin, the main component of mucus. Mucin normally supports
+healthy cell function, but in this tumour type, the mucin produced by
+cancer cells becomes part of the mass. Although mucinous tumours can
+occur elsewhere in the body, they most often appear in the breast.</p>
+<p>Infiltrating lobular carcinoma (ILC) starts in the lobules, the
+glands that produce milk. Because it is an invasive cancer, it extends
+beyond the lobule into nearby tissue, and over time can spread to other
+parts of the body.</p>
+</div>
+<div id="tumour-stage-classification" class="section level3">
+<h3>tumour Stage Classification</h3>
+<pre class="r"><code>tumour_stage_pie =
+  brca %&gt;% 
+  count(tumour_stage) %&gt;% 
+  mutate(
+    prop  = n / sum(n),
+    label = scales::percent(prop, accuracy = 0.1)
+  ) |&gt;
+  ggplot(aes(x = &quot;&quot;, y = prop, fill = tumour_stage)) +
+  geom_col(color = &quot;white&quot;) +
+  coord_polar(theta = &quot;y&quot;) +
+  geom_text(aes(label = label),
+            position = position_stack(vjust = 0.5),
+            size = 3) +
+  labs(title = &quot;Tumour Stage Classification&quot;,
+       fill  = &quot;Tumour Stage&quot;) +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+tumour_stage_pie</code></pre>
+<p><img src="EDA_files/figure-html/unnamed-chunk-8-1.png" width="672" />
+This pie chart shows how patients are distributed across tumour stages
+I, II, and III at the time of surgery. It allows us to see whether the
+dataset is dominated by early-stage disease, more advanced tumours, or a
+mix of both, which is important context when interpreting survival and
+biomarker patterns.</p>
+</div>
+<div id="general-patient-status-alive-or-dead" class="section level3">
+<h3>General Patient Status (alive or dead)</h3>
+<pre class="r"><code>general_status_pie =
+  brca %&gt;% 
+  count(patient_status) %&gt;% 
+  mutate(
+    prop  = n / sum(n),
+    label = scales::percent(prop, accuracy = 0.1)
+  ) %&gt;% 
+  ggplot(aes(x = &quot;&quot;, y = prop, fill = patient_status)) +
+  geom_col(color = &quot;white&quot;) +
+  coord_polar(theta = &quot;y&quot;) +
+  geom_text(aes(label = label),
+            position = position_stack(vjust = 0.5),
+            size = 3) +
+  labs(title = &quot;Patient Status&quot;,
+       fill  = &quot;Status&quot;) +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+general_status_pie</code></pre>
+<p><img src="EDA_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+This pie chart displays the overall proportion of patients who were
+alive versus dead at their last recorded visit. It provides a simple
+summary of outcomes in this cohort and indicates the baseline event rate
+that our predictive models will try to capture.</p>
+</div>
+<div id="patient-status-alive-or-dead-based-on-tumour-type"
+class="section level3">
+<h3>Patient status (alive or dead) based on tumour type</h3>
+<pre class="r"><code>histology_status_plot =
+  brca %&gt;% 
+  count(histology, patient_status) %&gt;% 
+  group_by(histology) %&gt;% 
+  mutate(prop = n / sum(n)) %&gt;% 
+  ggplot(aes(x = histology, y = prop, fill = patient_status)) +
+  geom_col(position = &quot;fill&quot;, color = &quot;white&quot;) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(
+    title = &quot;Patient Status by tumour Type (Histology)&quot;,
+    x = &quot;Histology&quot;,
+    y = &quot;Proportion within Histology&quot;,
+    fill = &quot;Patient status&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 30, hjust = 1),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+histology_status_plot</code></pre>
+<p><img src="EDA_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+This stacked bar plot shows the proportion of patients who were alive or
+dead within each histologic tumour type. By comparing the height of the
+“dead” segment across histologies, we can see whether certain carcinoma
+types in this sample are associated with a higher proportion of deaths.
+In this dataset, mucinous carcinoma appears to have a slightly higher
+death proportion than the other histologic groups, although the absolute
+number of mucinous cases is relatively small.</p>
+</div>
+<div id="patient-status-alive-or-dead-based-on-tumour-stage"
+class="section level3">
+<h3>Patient status (alive or dead) based on tumour stage</h3>
+<pre class="r"><code>tumour_stage_status_plot =
+  brca %&gt;% 
+  count(tumour_stage, patient_status) %&gt;% 
+  group_by(tumour_stage) %&gt;% 
+  mutate(prop = n / sum(n)) %&gt;% 
+  ggplot(aes(x = tumour_stage, y = prop, fill = patient_status)) +
+  geom_col(position = &quot;fill&quot;, color = &quot;white&quot;) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(
+    title = &quot;Patient Status by Tumour Stage&quot;,
+    x = &quot;Tumour stage&quot;,
+    y = &quot;Proportion within Stage&quot;,
+    fill = &quot;Patient status&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+
+tumour_stage_status_plot</code></pre>
+<p><img src="EDA_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+This stacked bar plot displays the proportion of patients who were alive
+or dead within each tumour stage. The figure shows that the fraction of
+deaths increases from stage I to stage III, consistent with the clinical
+expectation that more advanced tumours are associated with worse
+outcomes. This pattern supports using tumour stage as an important
+predictor in subsequent survival and logistic regression analyses.</p>
+</div>
+</div>
+<div id="eda-4.-stratified-summaries" class="section level2">
+<h2>EDA 4. Stratified Summaries</h2>
+<div id="protein-levels-by-tumour-stage" class="section level3">
+<h3>Protein levels by tumour stage</h3>
+<pre class="r"><code>brca %&gt;% 
+  pivot_longer(starts_with(&quot;protein&quot;),
+               names_to = &quot;protein&quot;,
+               values_to = &quot;value&quot;) %&gt;% 
+  ggplot(aes(x = tumour_stage, y = value, fill = tumour_stage)) +
+  geom_boxplot(alpha = 0.8) +
+  facet_wrap(~ protein, scales = &quot;free_y&quot;) +
+  labs(
+    title = &quot;Protein Levels by Tumour Stage&quot;,
+    x = &quot;Tumour Stage&quot;,
+    y = &quot;Protein Level&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = &quot;none&quot;
+  )</code></pre>
+<p><img src="EDA_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>This plot compares the distribution of each protein biomarker across
+tumour stages I, II, and III. Each protein is shown in a separate panel
+to make the differences easier to see. The boxplots highlight how
+biomarker levels change with increasing stage, allowing us to visually
+assess whether later-stage tumours tend to have higher or lower protein
+expression. This helps identify proteins that may be associated with
+disease progression.</p>
+</div>
+<div id="protein-levels-by-tumour-type-histology"
+class="section level3">
+<h3>Protein levels by tumour type (histology)</h3>
+<pre class="r"><code>brca %&gt;% 
+  pivot_longer(starts_with(&quot;protein&quot;),
+               names_to = &quot;protein&quot;,
+               values_to = &quot;value&quot;) %&gt;% 
+  ggplot(aes(x = histology, y = value, fill = histology)) +
+  geom_boxplot(alpha = 0.8) +
+  facet_wrap(~ protein, scales = &quot;free_y&quot;) +
+  labs(
+    title = &quot;Protein Levels by tumour Type (Histology)&quot;,
+    x = &quot;Histology&quot;,
+    y = &quot;Protein Level&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 25, hjust = 1),
+    plot.title = element_text(hjust = 0.5),
+    legend.position = &quot;none&quot;
+  )</code></pre>
+<p><img src="EDA_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+This plot shows the distribution of protein levels across the three
+histologic tumour types in the dataset: infiltrating ductal carcinoma,
+mucinous carcinoma, and infiltrating lobular carcinoma. By examining the
+boxplots for each protein within each histology group, we can explore
+whether certain biomarker patterns are more characteristic of specific
+tumour types. This can reveal potential diagnostic or subtype-specific
+differences in protein expression.</p>
+</div>
+</div>
+<div id="eda-5.-exploratory-statistical-analyses"
+class="section level2">
+<h2>EDA 5. Exploratory Statistical Analyses</h2>
+<div id="summary-of-age-by-status-and-two-sample-t-test-alive-vs-dead"
+class="section level3">
+<h3>Summary of age by status and Two-sample t-test (Alive vs Dead)</h3>
+<pre class="r"><code>brca %&gt;%
+group_by(patient_status) %&gt;%
+summarise(
+mean_age = mean(age, na.rm = TRUE),
+sd_age   = sd(age, na.rm = TRUE),
+n        = n()
+)</code></pre>
+<pre><code>## # A tibble: 3 × 4
+##   patient_status mean_age sd_age     n
+##   &lt;fct&gt;             &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+## 1 Alive              58.8   12.9   255
+## 2 Dead               59.2   13.2    66
+## 3 &lt;NA&gt;               59.2   14.3    13</code></pre>
+<pre class="r"><code># Two-sample t-test (Alive vs Dead)
+
+age_status_ttest =
+t.test(age ~ patient_status, data = brca)
+
+age_status_ttest</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  age by patient_status
+## t = -0.19146, df = 99.37, p-value = 0.8486
+## alternative hypothesis: true difference in means between group Alive and group Dead is not equal to 0
+## 95 percent confidence interval:
+##  -3.949756  3.254569
+## sample estimates:
+## mean in group Alive  mean in group Dead 
+##            58.80392            59.15152</code></pre>
+<p>We first compared age between patients who were alive and those who
+had died at last follow up. Mean age was 58.8 years among survivors and
+59.2 years among those who died, with very similar standard deviations.
+A Welch two-sample t-test (t = −0.19, p = 0.85) showed no evidence of a
+difference in mean age between the two groups. Based on this, age does
+not appear to be a strong discriminator of survival status in this
+cohort, although we still consider it clinically important enough to
+include as a covariate in later models.</p>
+</div>
+<div id="contingency-table-tumour-stage-x-status"
+class="section level3">
+<h3>Contingency table: tumour stage x status</h3>
+<pre class="r"><code>stage_status_tab =
+brca %&gt;%
+count(tumour_stage, patient_status) %&gt;%
+tidyr::pivot_wider(
+names_from  = patient_status,
+values_from = n,
+values_fill = 0
+)
+
+stage_status_tab</code></pre>
+<pre><code>## # A tibble: 3 × 4
+##   tumour_stage Alive  Dead  `NA`
+##   &lt;ord&gt;        &lt;int&gt; &lt;int&gt; &lt;int&gt;
+## 1 I               51    10     3
+## 2 II             144    38     7
+## 3 III             60    18     3</code></pre>
+<pre class="r"><code># Chi-square test of independence
+
+stage_status_chisq =
+chisq.test(as.matrix(stage_status_tab[ , -1]))
+stage_status_chisq</code></pre>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test
+## 
+## data:  as.matrix(stage_status_tab[, -1])
+## X-squared = 1.0913, df = 4, p-value = 0.8956</code></pre>
+<p>We next examined whether survival status was associated with tumour
+stage using a chi-square test of independence. Counts of alive and dead
+patients were similar across stages I, II, and III. The chi-square test
+(χ² = 1.09, df = 4, p = 0.90) provided no statistical evidence that the
+distribution of survival status differs by stage in this dataset. This
+suggests that, although more advanced disease is clinically expected to
+have worse outcomes, our sample does not show a strong stage–mortality
+association, possibly due to limited sample size or follow-up time. We
+still retain tumour stage as a key predictor in our logistic regression
+because of its clear clinical relevance.</p>
+</div>
+<div id="contingency-table-histology-x-status" class="section level3">
+<h3>Contingency table: histology x status</h3>
+<pre class="r"><code>histology_status_tab =
+brca %&gt;%
+count(histology, patient_status) %&gt;%
+tidyr::pivot_wider(
+names_from  = patient_status,
+values_from = n,
+values_fill = 0
+)
+
+histology_status_tab</code></pre>
+<pre><code>## # A tibble: 3 × 4
+##   histology                      Alive  Dead  `NA`
+##   &lt;fct&gt;                          &lt;int&gt; &lt;int&gt; &lt;int&gt;
+## 1 Infiltrating Ductal Carcinoma    179    47     7
+## 2 Infiltrating Lobular Carcinoma    67    16     6
+## 3 Mucinous Carcinoma                 9     3     0</code></pre>
+<pre class="r"><code># Chi-square test of independence
+
+histology_status_chisq =
+chisq.test(as.matrix(histology_status_tab[ , -1]))
+histology_status_chisq</code></pre>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test
+## 
+## data:  as.matrix(histology_status_tab[, -1])
+## X-squared = 3.1484, df = 4, p-value = 0.5333</code></pre>
+<p>We also tested for an association between histologic tumour type and
+survival status. Infiltrating ductal carcinoma, infiltrating lobular
+carcinoma, and mucinous carcinoma all had broadly similar proportions of
+deaths. The chi-square test (χ² = 3.15, df = 4, p = 0.53) indicated no
+evidence that mortality differs across histology groups. This finding
+aligns with the stacked bar plot and suggests that histology alone is
+not a strong predictor of survival in this sample, although we still
+consider it as a descriptive variable and a potential adjustment factor
+in modeling.</p>
+<pre class="r"><code>protein_cor =
+  brca %&gt;% 
+  select(starts_with(&quot;protein&quot;)) %&gt;% 
+  cor(use = &quot;complete.obs&quot;)
+
+protein_cor</code></pre>
+<pre><code>##            protein1    protein2    protein3   protein4
+## protein1  1.0000000  0.23814130 -0.12948243 0.28034308
+## protein2  0.2381413  1.00000000 -0.41582485 0.08823857
+## protein3 -0.1294824 -0.41582485  1.00000000 0.06531565
+## protein4  0.2803431  0.08823857  0.06531565 1.00000000</code></pre>
+<pre class="r"><code>corrplot(protein_cor, method = &quot;color&quot;, tl.col = &quot;black&quot;)</code></pre>
+<p><img src="EDA_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>To assess how similar the four protein biomarkers are to one another,
+we computed a correlation matrix of Protein1–Protein4. This helps us
+understand whether the proteins provide largely redundant information or
+capture distinct aspects of tumour biology. The resulting correlations
+were generally (low/moderate/high — fill in after you look at the
+matrix), suggesting that while some proteins are related, no pair is
+perfectly correlated. This supports including multiple protein markers
+in our models, while remaining aware of potential collinearity.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
