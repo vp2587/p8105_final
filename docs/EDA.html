@@ -999,14 +999,29 @@ while keeping collinearity concerns relatively low.</p>
 </div>
 <div id="next-steps" class="section level3">
 <h3>Next Steps</h3>
-<p>The patterns and correlations uncovered above — including moderate
-relationships among certain proteins and no strong differences in
-biomarker levels by tumor stage/histology — guide our next steps. With
-this evidence, we proceed to fit a logistic regression to predict
-patient status, followed by ANOVA to test for differences in biomarker
-expression across clinical groups, and finally survival analysis. These
-analyses build directly on the exploratory structure identified in this
-section.</p>
+<p>Based on the exploratory analyses, several findings motivated our
+shift toward the formal modeling methods we chose. First, the
+patient_status variable (Alive vs Dead) is a binary outcome, making
+multiple logistic regression an appropriate method for evaluating how
+clinical features and biomarkers jointly predict survival status. Our
+EDA showed meaningful differences in protein distributions and tumour
+characteristics between groups, suggesting that a multivariable model
+could help quantify these relationships while adjusting for potential
+confounders.</p>
+<p>Second, the boxplots and summary statistics comparing protein levels
+across tumour stage and histology groups indicated possible group-level
+differences in protein expression. ANOVA is therefore a natural next
+step for formally testing whether mean biomarker expression varies
+across these clinical categories.</p>
+<p>Finally, the correlation matrix showed that while some proteins are
+moderately correlated, no pair exhibited a correlation large enough to
+indicate redundancy. This supported the inclusion of multiple protein
+markers in both logistic regression and ANOVA without severe
+collinearity concerns.</p>
+<p>Together, these exploratory results provided clear direction:
+logistic regression to model patient survival using multiple predictors,
+and ANOVA to test for protein expression differences across tumour
+stages and histologic subtypes.</p>
 </div>
 </div>
 
