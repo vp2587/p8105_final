@@ -49,7 +49,7 @@ We began our analysis with the main question:
 
 We wanted to determine whether Protein1 through Protein4 showed patterns or associations that might indicate prognostic value. Our initial expectation was that one or more of these proteins might relate to survival status or to overall follow up time. Through exploratory plots, correlations, logistic regression, and survival analysis, we found that the proteins showed only mild relationships with each other and did not show strong or statistically significant associations with survival outcomes. This suggests that, in this dataset, the protein biomarkers may not have strong predictive value, or alternatively that any true effects may be too small to detect with the available sample size.
 
-After some initial exploratory statistical analyses, a new question arose:
+After some initial exploratory statistical analyses and additional analyses, a new question arose:
 
 2. Is the sample size large enough to detect meaningful associations?
 
