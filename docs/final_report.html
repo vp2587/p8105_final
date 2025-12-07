@@ -391,8 +391,67 @@ across patient groups, build a regression model to predict survival
 status, and conduct basic survival analysis to explore factors
 associated with follow-up outcomes.</p>
 </div>
+<div id="related-work-that-inspired-us" class="section level1">
+<h1>2) Related Work that inspired us</h1>
+<p>Our project was partly inspired by work published by Columbia
+University Irving Medical Center, specifically the article titled
+“Metabolic Markers May Predict Breast Cancer in High Risk Women.”</p>
+<p>The article can be found <a
+href="https://www.publichealth.columbia.edu/news/metabolic-markers-may-predict-breast-cancer-high-risk-women">here</a>.</p>
+<p>The article discusses how metabolic and molecular biomarkers may have
+predictive value for identifying individuals at increased risk for
+breast cancer. It highlights how proteins involved in inflammation,
+metabolism, and other cellular pathways can provide biological insight
+beyond standard clinical variables.</p>
+<p>Although the CUIMC article focuses on early detection rather than
+patient survival, the main idea motivated our project: molecular
+biomarkers may help predict important clinical outcomes. This connection
+encouraged us to explore whether the four protein biomarkers in our
+dataset contain useful prognostic information. The related work helped
+frame our investigation within the larger scientific effort to integrate
+molecular measurements with clinical data to improve understanding of
+breast cancer outcomes.</p>
+</div>
+<div id="initial-questions" class="section level1">
+<h1>3) Initial Questions</h1>
+<p>We began our analysis with two main questions.</p>
+<ol style="list-style-type: decimal">
+<li>Which protein biomarkers in the dataset, if any, help predict
+patient survival or vital status?</li>
+</ol>
+<p>We wanted to determine whether Protein1 through Protein4 showed
+patterns or associations that might indicate prognostic value. Our
+initial expectation was that one or more of these proteins might relate
+to survival status or to overall follow up time. Through exploratory
+plots, correlations, logistic regression, and survival analysis, we
+found that the proteins showed only mild relationships with each other
+and did not show strong or statistically significant associations with
+survival outcomes. This suggests that, in this dataset, the protein
+biomarkers may not have strong predictive value, or alternatively that
+any true effects may be too small to detect with the available sample
+size.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Is the sample size large enough to detect meaningful
+associations?</li>
+</ol>
+<p>The full dataset contains 334 patients, and 317 patients remained
+after cleaning for survival analysis. Before modeling, we questioned
+whether this sample size would provide enough power to detect modest
+biomarker effects. Many of our hypothesis tests produced non significant
+results. This could reflect true biological null effects, but it also
+likely reflects limited statistical power, especially because the number
+of patients who died (66) is relatively small. This limits the power for
+binary outcome modeling and subgroup comparisons.</p>
+<p>Overall, our analyses addressed these questions by combining
+visualization, exploratory summaries, logistic regression, ANOVA, and
+Kaplan Meier survival methods. Across these approaches, we found limited
+evidence that the protein biomarkers were strongly associated with
+patient outcomes. The results also suggest that the sample size and
+outcome imbalance may have reduced our ability to detect small but
+meaningful effects.</p>
+</div>
 <div id="data" class="section level1">
-<h1>2) Data</h1>
+<h1>4) Data</h1>
 <div id="source-and-study-population." class="section level3">
 <h3>Source and study population.</h3>
 <p>This project uses a de-identified, publicly available breast cancer
@@ -487,7 +546,7 @@ indicator.</p>
 </div>
 </div>
 <div id="exploratory-data-analysis-eda" class="section level2">
-<h2>3) Exploratory Data Analysis (EDA)</h2>
+<h2>5) Exploratory Data Analysis (EDA)</h2>
 </div>
 <div id="eda-1.-summary-tables" class="section level2">
 <h2>EDA 1. Summary Tables</h2>
@@ -1116,7 +1175,7 @@ section.</p>
 </div>
 <div id="multiple-linear-regression-predicting-patient-status"
 class="section level1">
-<h1>4) Multiple linear regression: Predicting patient status</h1>
+<h1>6) Multiple linear regression: Predicting patient status</h1>
 <div id="model-specification" class="section level3">
 <h3>Model specification</h3>
 <ul>
@@ -1238,7 +1297,7 @@ randomly predicting patient status.</p>
 </div>
 <div id="anova-protein-biomarkers-across-clinical-groups"
 class="section level1">
-<h1>5) ANOVA: Protein biomarkers across clinical groups</h1>
+<h1>7) ANOVA: Protein biomarkers across clinical groups</h1>
 <pre class="r"><code># identify protein biomarker columns (protein1–protein4)
 protein_vars &lt;- names(brca)[grepl(&quot;^protein&quot;, names(brca))]</code></pre>
 <div id="do-protein-levels-differ-by-tumour-stage"
@@ -1529,7 +1588,7 @@ indicators of disease severity.</p>
 </div>
 </div>
 <div id="survival-analysis" class="section level1">
-<h1>6) Survival analysis</h1>
+<h1>8) Survival analysis</h1>
 <div id="time-to-event-definition" class="section level3">
 <h3>Time-to-event definition</h3>
 <ul>
@@ -1668,7 +1727,7 @@ comparison may have limited power to detect modest differences.</p>
 </div>
 </div>
 <div id="discussion" class="section level1">
-<h1>7) Discussion</h1>
+<h1>9) Discussion</h1>
 <p>Across this cohort of 334 surgically treated breast cancer patients,
 we found that basic clinical characteristics and the four available
 protein biomarkers carried only modest prognostic information for

@@ -31,7 +31,31 @@ library(car)
 
 Breast cancer is a major global health burden and a leading cause of cancer-related death among women. While clinical characteristics such as tumour stage and histology inform prognosis, molecular biomarkers may offer additional insight into disease progression and survival. In this project, we describe patterns of clinical features and protein biomarkers in the BRCA dataset, assess whether biomarker levels differ across patient groups, build a regression model to predict survival status, and conduct basic survival analysis to explore factors associated with follow-up outcomes.
 
-# 2) Data
+# 2) Related Work that inspired us
+
+Our project was partly inspired by work published by Columbia University Irving Medical Center, specifically the article titled "Metabolic Markers May Predict Breast Cancer in High Risk Women." 
+
+The article can be found [here](https://www.publichealth.columbia.edu/news/metabolic-markers-may-predict-breast-cancer-high-risk-women).
+
+The article discusses how metabolic and molecular biomarkers may have predictive value for identifying individuals at increased risk for breast cancer. It highlights how proteins involved in inflammation, metabolism, and other cellular pathways can provide biological insight beyond standard clinical variables.
+
+Although the CUIMC article focuses on early detection rather than patient survival, the main idea motivated our project: molecular biomarkers may help predict important clinical outcomes. This connection encouraged us to explore whether the four protein biomarkers in our dataset contain useful prognostic information. The related work helped frame our investigation within the larger scientific effort to integrate molecular measurements with clinical data to improve understanding of breast cancer outcomes.
+
+# 3) Initial Questions
+
+We began our analysis with two main questions.
+
+1. Which protein biomarkers in the dataset, if any, help predict patient survival or vital status?
+
+We wanted to determine whether Protein1 through Protein4 showed patterns or associations that might indicate prognostic value. Our initial expectation was that one or more of these proteins might relate to survival status or to overall follow up time. Through exploratory plots, correlations, logistic regression, and survival analysis, we found that the proteins showed only mild relationships with each other and did not show strong or statistically significant associations with survival outcomes. This suggests that, in this dataset, the protein biomarkers may not have strong predictive value, or alternatively that any true effects may be too small to detect with the available sample size.
+
+2. Is the sample size large enough to detect meaningful associations?
+
+The full dataset contains 334 patients, and 317 patients remained after cleaning for survival analysis. Before modeling, we questioned whether this sample size would provide enough power to detect modest biomarker effects. Many of our hypothesis tests produced non significant results. This could reflect true biological null effects, but it also likely reflects limited statistical power, especially because the number of patients who died (66) is relatively small. This limits the power for binary outcome modeling and subgroup comparisons.
+
+Overall, our analyses addressed these questions by combining visualization, exploratory summaries, logistic regression, ANOVA, and Kaplan Meier survival methods. Across these approaches, we found limited evidence that the protein biomarkers were strongly associated with patient outcomes. The results also suggest that the sample size and outcome imbalance may have reduced our ability to detect small but meaningful effects.
+
+# 4) Data
 
 ### Source and study population.
 This project uses a de-identified, publicly available breast cancer dataset obtained from Kaggle (https://www.kaggle.com/datasets/amandam1/breastcancerdataset/code). The dataset includes 334 patients with primary breast cancer who underwent surgical treatment. For each patient, the file contains demographic information (age, gender), tumour characteristics (tumour stage, histology, ER/PR/HER2 receptor status), several protein biomarkers (Protein1–Protein4), treatment information (type of surgery), and follow-up data (date of surgery, date of last visit, and vital status).
@@ -101,7 +125,7 @@ brca = brca_df_raw |>
 ```
 
 
-## 3) Exploratory Data Analysis (EDA)
+## 5) Exploratory Data Analysis (EDA)
 
 
 ## EDA 1. Summary Tables
@@ -412,7 +436,7 @@ The patterns and correlations uncovered above — including moderate relationshi
 
 
 
-# 4) Multiple linear regression: Predicting patient status
+# 6) Multiple linear regression: Predicting patient status
 
 ### Model specification
 - Outcome: patient_status (Alive vs Dead).
@@ -504,7 +528,7 @@ cv_summary =
 ```
 To assess generalizability, we performed a 5-fold cross-validation. The average cross-validated AUC was `r round(cv_summary$mean_auc, 3)` with a standard deviation of `r round(cv_summary$sd_auc, 3)`. These values suggest that this model was minimally better than randomly predicting patient status.
 
-# 5) ANOVA: Protein biomarkers across clinical groups
+# 7) ANOVA: Protein biomarkers across clinical groups
 ```{r}
 # identify protein biomarker columns (protein1–protein4)
 protein_vars <- names(brca)[grepl("^protein", names(brca))]
@@ -695,7 +719,7 @@ Across histologic subtypes, protein levels were visually similar with substantia
 Final Conclusion: Overall, there was no evidence that protein biomarker expression differed meaningfully by tumour stage or histologic subtype in this dataset. Although there were small differences in average levels, the large amount of variability within groups and the overlap in distributions suggest that these biomarkers do not strongly reflect clinical disease stage or histology on their own. These findings indicate that additional clinical or molecular factors are likely needed to explain differences in disease characteristics, and that the proteins available in this dataset may have limited value as standalone indicators of disease severity.
 
 
-# 6) Survival analysis
+# 8) Survival analysis
 
 ### Time-to-event definition
 - Follow-up time = Date_of_Last_Visit – Date_of_Surgery.
@@ -793,7 +817,7 @@ A log-rank test comparing the three stages gives a p-value of 0.10. This is larg
 
 Kaplan–Meier curves stratified by HER2 status (positive vs negative) are almost completely overlapping (Figure Z). The log-rank test yields a p-value of 0.97, indicating no evidence of a difference in survival between HER2-positive and HER2-negative patients in this sample. This result should be interpreted cautiously because the HER2-positive group is relatively small (29 patients vs 288 HER2-negative), so the comparison may have limited power to detect modest differences.
 
-# 7) Discussion 
+# 9) Discussion 
 
 Across this cohort of 334 surgically treated breast cancer patients, we found that basic clinical characteristics and the four available protein biomarkers carried only modest prognostic information for survival status at last follow-up. Descriptively, most patients were middle-aged or older, had infiltrating ductal carcinoma, and presented with stage I–II disease. Age did not differ meaningfully between patients who were alive versus dead at last contact, and contingency‐table analyses showed no statistically significant association between survival status and either tumour stage or histologic subtype, despite patterns that were directionally consistent with worse outcomes in higher stages.
 
