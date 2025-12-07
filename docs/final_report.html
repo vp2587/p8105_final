@@ -414,7 +414,7 @@ breast cancer outcomes.</p>
 </div>
 <div id="initial-questions" class="section level1">
 <h1>3) Initial Questions</h1>
-<p>We began our analysis with two main questions.</p>
+<p>We began our analysis with the main question:</p>
 <ol style="list-style-type: decimal">
 <li>Which protein biomarkers in the dataset, if any, help predict
 patient survival or vital status?</li>
@@ -430,18 +430,21 @@ survival outcomes. This suggests that, in this dataset, the protein
 biomarkers may not have strong predictive value, or alternatively that
 any true effects may be too small to detect with the available sample
 size.</p>
+<p>After some initial exploratory statistical analyses, a new question
+arose:</p>
 <ol start="2" style="list-style-type: decimal">
 <li>Is the sample size large enough to detect meaningful
 associations?</li>
 </ol>
 <p>The full dataset contains 334 patients, and 317 patients remained
-after cleaning for survival analysis. Before modeling, we questioned
-whether this sample size would provide enough power to detect modest
-biomarker effects. Many of our hypothesis tests produced non significant
-results. This could reflect true biological null effects, but it also
-likely reflects limited statistical power, especially because the number
-of patients who died (66) is relatively small. This limits the power for
-binary outcome modeling and subgroup comparisons.</p>
+after cleaning for survival analysis. After some exploratory statistical
+analyses, we questioned whether this sample size would provide enough
+power to detect modest biomarker effects. Many of our hypothesis tests
+produced non significant results. This could reflect true biological
+null effects, but it also likely reflects limited statistical power,
+especially because the number of patients who died (66) is relatively
+small. This limits the power for binary outcome modeling and subgroup
+comparisons.</p>
 <p>Overall, our analyses addressed these questions by combining
 visualization, exploratory summaries, logistic regression, ANOVA, and
 Kaplan Meier survival methods. Across these approaches, we found limited

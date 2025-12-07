@@ -43,15 +43,17 @@ Although the CUIMC article focuses on early detection rather than patient surviv
 
 # 3) Initial Questions
 
-We began our analysis with two main questions.
+We began our analysis with the main question:
 
 1. Which protein biomarkers in the dataset, if any, help predict patient survival or vital status?
 
 We wanted to determine whether Protein1 through Protein4 showed patterns or associations that might indicate prognostic value. Our initial expectation was that one or more of these proteins might relate to survival status or to overall follow up time. Through exploratory plots, correlations, logistic regression, and survival analysis, we found that the proteins showed only mild relationships with each other and did not show strong or statistically significant associations with survival outcomes. This suggests that, in this dataset, the protein biomarkers may not have strong predictive value, or alternatively that any true effects may be too small to detect with the available sample size.
 
+After some initial exploratory statistical analyses, a new question arose:
+
 2. Is the sample size large enough to detect meaningful associations?
 
-The full dataset contains 334 patients, and 317 patients remained after cleaning for survival analysis. Before modeling, we questioned whether this sample size would provide enough power to detect modest biomarker effects. Many of our hypothesis tests produced non significant results. This could reflect true biological null effects, but it also likely reflects limited statistical power, especially because the number of patients who died (66) is relatively small. This limits the power for binary outcome modeling and subgroup comparisons.
+The full dataset contains 334 patients, and 317 patients remained after cleaning for survival analysis. After some exploratory statistical analyses, we questioned whether this sample size would provide enough power to detect modest biomarker effects. Many of our hypothesis tests produced non significant results. This could reflect true biological null effects, but it also likely reflects limited statistical power, especially because the number of patients who died (66) is relatively small. This limits the power for binary outcome modeling and subgroup comparisons.
 
 Overall, our analyses addressed these questions by combining visualization, exploratory summaries, logistic regression, ANOVA, and Kaplan Meier survival methods. Across these approaches, we found limited evidence that the protein biomarkers were strongly associated with patient outcomes. The results also suggest that the sample size and outcome imbalance may have reduced our ability to detect small but meaningful effects.
 
